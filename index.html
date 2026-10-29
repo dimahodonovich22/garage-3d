@@ -1,0 +1,1308 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Угловой пролёт гаража</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: full-bleed 3D stage; a floating spec sheet docks top-left on desktop and becomes a bottom sheet on phones */
+:root{
+  --stage:#d5d9dc; --panel:rgba(248,247,243,.94); --ink:#1b1c1e; --muted:#5f6267; --line:#d6d2c8;
+  --chip:#eae8e2; --accent:#a87c14; --label-bg:rgba(24,25,27,.86); --label-ink:#f5f3ee;
+  --room-bg:rgba(255,255,253,.94); --room-ink:#1b1c1e; --room-line:#cfc9bd;   /* room tags sit on the light 3D scene in both themes */
+  --f-display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--stage:#16181b;--panel:rgba(27,28,31,.93);--ink:#ebe9e4;--muted:#a3a49f;--line:#3a3b3e;--chip:#2a2b2f;--accent:#e0b443;color-scheme:dark}}
+:root[data-theme="dark"]{--stage:#16181b;--panel:rgba(27,28,31,.93);--ink:#ebe9e4;--muted:#a3a49f;--line:#3a3b3e;--chip:#2a2b2f;--accent:#e0b443;color-scheme:dark}
+html,body{height:100%}
+body{background:var(--stage);color:var(--ink);font:15px/1.4 var(--f-body);overflow:hidden}
+#stage{position:fixed;inset:0;overflow:hidden}
+#c{position:absolute;left:0;top:0;display:block;touch-action:none;outline:none}
+#photo{position:absolute;left:0;top:0;pointer-events:none;max-width:none;opacity:.5}
+#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.dim{position:absolute;left:0;top:0;font:500 12px/1 var(--f-mono);font-variant-numeric:tabular-nums;background:var(--label-bg);color:var(--label-ink);padding:4px 6px;border-radius:3px;white-space:nowrap}
+#loading{position:absolute;inset:0;display:grid;place-items:center;font:600 18px var(--f-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+#panel{position:absolute;z-index:5;top:calc(env(safe-area-inset-top,0px) + 16px);left:max(16px,env(safe-area-inset-left,0px));width:328px;max-height:calc(100% - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow:auto;overscroll-behavior:contain;background:var(--panel);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:16px;box-shadow:0 10px 30px rgba(0,0,0,.14)}
+.head{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.head h1{font:600 27px/1.02 var(--f-display);letter-spacing:.01em;margin:0;text-wrap:balance}
+.head p{margin:5px 0 0;color:var(--muted);font-size:13px}
+#collapse{display:none}
+.spec{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.spec div{background:var(--chip);border-radius:4px;padding:6px 8px;min-width:0}
+.spec b{display:block;font:500 15px/1.15 var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spec span{display:block;font:600 11px/1.2 var(--f-display);color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.sec{display:flex;flex-direction:column;gap:8px}
+.cap{font:600 12px/1 var(--f-display);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:0}
+.views{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.views button{appearance:none;border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:5px;padding:3px 3px 5px;font:500 12px/1.1 var(--f-body);cursor:pointer;display:flex;flex-direction:column;gap:4px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.views button:hover{border-color:var(--muted)}
+.views button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.views button:focus-visible,.btn:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.thumb{display:block;width:100%;aspect-ratio:4/3;border-radius:3px;object-fit:cover;background:#2a2b2e}
+svg.thumb{background:#c9ccce;color:#1d1e20}
+#hint{margin:0;font-size:13px;color:var(--muted);min-height:2.8em}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.row label{font-size:14px}
+.row output{font:500 13px var(--f-mono);font-variant-numeric:tabular-nums;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--accent);margin:0}
+.toggles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.eq{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.eq button.card{appearance:none;text-align:left;cursor:pointer;border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:6px;padding:10px 12px;font:inherit;display:flex;flex-direction:column;gap:6px;min-width:0}
+.eq button.card:hover{border-color:var(--muted)}
+.eq button.card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.card .t{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.card .t b{font:600 17px/1.1 var(--f-display);letter-spacing:.02em}
+.card .t span{font:600 11px/1 var(--f-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.card dl{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:0;font-size:12.5px}
+.card dt{color:var(--muted)}
+.card dd{margin:0;font-family:var(--f-mono);font-size:12px;font-variant-numeric:tabular-nums;text-align:right}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chips span{font:500 11.5px/1 var(--f-mono);background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:4px 6px}
+.toggles label{display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;background:var(--chip);border-radius:4px;padding:7px 8px}
+.toggles input{accent-color:var(--accent);margin:0}
+.tbtn{appearance:none;border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:4px;padding:7px 8px;font:500 14px var(--f-body);cursor:pointer;text-align:left}
+.tbtn:hover{background:var(--chip)}
+.tbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.room{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--room-bg);color:var(--room-ink);border:1px solid var(--room-line);border-radius:4px;padding:5px 8px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+.room b{font:600 14px/1 var(--f-display);letter-spacing:.03em}
+.room span{font:500 11px/1 var(--f-mono);font-variant-numeric:tabular-nums}
+details{border-top:1px solid var(--line);padding-top:12px}
+summary{cursor:pointer;font:600 13px/1 var(--f-display);text-transform:uppercase;letter-spacing:.1em;color:var(--ink);list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";font-family:var(--f-mono)}
+details[open] summary::after{content:"–"}
+.form{display:grid;grid-template-columns:1fr 92px;gap:6px 10px;align-items:center;margin-top:12px}
+.form label{font-size:13px;color:var(--ink)}
+.form input{width:100%;font:500 14px var(--f-mono);font-variant-numeric:tabular-nums;padding:5px 6px;border:1px solid var(--line);border-radius:4px;background:var(--chip);color:var(--ink);text-align:right}
+.form .grp{grid-column:1/-1;font:600 11px/1 var(--f-display);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:6px}
+.note{font-size:12px;color:var(--muted);margin:10px 0 0}
+.btn{appearance:none;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:4px;padding:5px 10px;font:500 13px var(--f-body);cursor:pointer}
+#ovrow[hidden]{display:none!important}
+.keys{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:6px;font-size:13px}
+.keys li{display:grid;grid-template-columns:104px minmax(0,1fr);gap:8px;align-items:center}
+.keys li>span{color:var(--muted);font-size:12px}
+kbd{display:inline-block;font:500 11px/1 var(--f-mono);color:var(--ink);background:var(--chip);border:1px solid var(--line);border-bottom-width:2px;border-radius:3px;padding:3px 5px;margin-right:3px}
+#sel{position:absolute;z-index:6;left:360px;right:190px;bottom:16px;display:flex;justify-content:center;pointer-events:none}
+.sel-card{pointer-events:auto;background:var(--panel);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;box-shadow:0 10px 30px rgba(0,0,0,.14);max-width:100%}
+.sel-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sel-t b{font:600 16px/1.1 var(--f-display);letter-spacing:.02em}
+.sel-t span{font:500 12px/1.3 var(--f-mono);font-variant-numeric:tabular-nums;color:var(--muted)}
+.sel-b{display:flex;flex-wrap:wrap;gap:6px}
+#pad{position:absolute;z-index:6;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:repeat(3,46px);gap:6px;touch-action:none;user-select:none;-webkit-user-select:none}
+#pad button{appearance:none;width:46px;height:46px;border:1px solid var(--line);border-radius:8px;background:var(--panel);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--ink);font:500 20px/1 var(--f-mono);cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.12);touch-action:none}
+#pad button small{font:600 11px/1 var(--f-display);letter-spacing:.06em;text-transform:uppercase}
+#pad button:active{background:var(--chip);border-color:var(--ink)}
+#pad button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:640px){
+  #panel{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);left:max(10px,env(safe-area-inset-left,0px));right:max(10px,env(safe-area-inset-right,0px));width:auto;max-height:48%;padding:12px;gap:12px}
+  .head h1{font-size:22px}
+  #collapse{display:inline-block}
+  #panel.min .fold{display:none}
+  #sel{left:max(10px,env(safe-area-inset-left,0px));right:max(10px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 10px);bottom:auto}
+  #pad{top:calc(env(safe-area-inset-top,0px) + 10px);bottom:auto;right:max(10px,env(safe-area-inset-right,0px));grid-template-columns:repeat(3,42px)}
+  #pad button{width:42px;height:42px}
+  body.has-sel #pad{top:calc(env(safe-area-inset-top,0px) + 150px)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div id="stage">
+  <canvas id="c" tabindex="0" aria-label="3D-модель углового пролёта гаража"></canvas>
+  <img id="photo" alt="" hidden>
+  <div id="labels"></div>
+  <div id="loading">Загрузка модели…</div>
+  <div id="sel" hidden>
+    <div class="sel-card" role="group" aria-label="Выбранный объект">
+      <div class="sel-t"><b id="selName"></b><span id="selInfo"></span></div>
+      <div class="sel-b">
+        <button class="btn" data-rot="15" title="Повернуть против часовой, клавиша [">↺ 15°</button>
+        <button class="btn" data-rot="-15" title="Повернуть по часовой, клавиша ]">↻ 15°</button>
+        <button class="btn" data-rot="-90" title="Повернуть на 90°, клавиша R">↻ 90°</button>
+        <button class="btn" id="selHome">На место</button>
+        <button class="btn" id="selClose" aria-label="Снять выделение" title="Снять выделение, Esc">✕</button>
+      </div>
+    </div>
+  </div>
+  <div id="pad" role="group" aria-label="Полёт камеры">
+    <button data-k="up" title="Подняться: E" aria-label="Подняться"><small>выше</small></button>
+    <button data-k="fwd" title="Вперёд: ↑" aria-label="Вперёд">↑</button>
+    <button data-k="down" title="Опуститься: Q" aria-label="Опуститься"><small>ниже</small></button>
+    <button data-k="tl" title="Повернуть влево: ←" aria-label="Повернуть влево">←</button>
+    <button data-k="back" title="Назад: ↓" aria-label="Назад">↓</button>
+    <button data-k="tr" title="Повернуть вправо: →" aria-label="Повернуть вправо">→</button>
+  </div>
+  <aside id="panel">
+    <div class="head">
+      <div>
+        <h1>Угловой пролёт гаража</h1>
+        <p>Стальной зал, восемь пролётов по 5 м. Модель снята с трёх фото.</p>
+      </div>
+      <button class="btn" id="collapse" aria-expanded="true">Свернуть</button>
+    </div>
+    <div class="spec fold" id="spec"></div>
+    <div class="sec">
+      <p class="cap">Ракурс</p>
+      <div class="views" id="views">
+        <button data-view="corner" aria-pressed="true"><svg class="thumb" viewBox="0 0 80 60" aria-hidden="true"><path d="M0 14 L40 26 L80 14 V0 H0Z" fill="#e8eaeb"/><path d="M0 14 L40 26 V52 L0 60Z" fill="#26272a"/><path d="M40 26 L80 14 V60 L40 52Z" fill="#f2f2ef"/><path d="M40 40 L80 33 V60 L40 52Z" fill="#26272a"/><path d="M4 22 L36 46 M4 46 L36 30" stroke="#cdc8bb" stroke-width="1.6"/><rect x="58" y="22" width="14" height="30" fill="#fbfbfa" stroke="#9aa" stroke-width=".6"/></svg>Угол</button>
+        <button data-view="p1" aria-pressed="false"><img class="thumb" src="photos/1.webp" alt="">Фото 1</button>
+        <button data-view="p2" aria-pressed="false"><img class="thumb" src="photos/2.webp" alt="">Фото 2</button>
+        <button data-view="p3" aria-pressed="false"><img class="thumb" src="photos/3.webp" alt="">Фото 3</button>
+        <button data-view="p4" aria-pressed="false"><img class="thumb" src="photos/4.webp" alt="">Фото 4</button>
+        <button data-view="tires" aria-pressed="false"><svg class="thumb" viewBox="0 0 80 60" aria-hidden="true"><rect width="80" height="60" fill="#2a2b2e"/><rect x="0" y="46" width="80" height="14" fill="#bfc0bf"/><rect x="10" y="28" width="16" height="20" fill="#1f72d6"/><path d="M27 22 Q34 18 34 30 L30 34" stroke="#111" stroke-width="5" fill="none"/><rect x="44" y="30" width="18" height="17" fill="#1f72d6"/><rect x="51" y="8" width="5" height="24" fill="#1f72d6"/><path d="M41 31 H66" stroke="#c9ccce" stroke-width="3"/><path d="M54 6 V30" stroke="#d9dcde" stroke-width="1.6"/><circle cx="73" cy="38" r="6" fill="none" stroke="#111" stroke-width="3"/></svg>Шины</button>
+        <button data-view="plan" aria-pressed="false"><svg class="thumb" viewBox="0 0 80 60" aria-hidden="true"><rect x="22" y="4" width="36" height="52" fill="#bfc0bf" stroke="#26272a" stroke-width="2"/><path d="M22 4 V56 M58 4 V56" stroke="#26272a" stroke-width="3"/><path d="M30 56 H50" stroke="#fbfbfa" stroke-width="3"/><rect x="23" y="44" width="9" height="11" fill="#e4e3df" stroke="#777" stroke-width=".5"/><path d="M22 10.5 H58 M22 17 H58 M22 23.5 H58 M22 30 H58 M22 36.5 H58 M22 43 H58 M22 49.5 H58" stroke="#8d8a82" stroke-width=".7"/></svg>План</button>
+        <button data-view="outside" aria-pressed="false"><svg class="thumb" viewBox="0 0 80 60" aria-hidden="true"><path d="M8 26 L40 14 L72 26 V52 H8Z" fill="#43464a"/><path d="M8 26 L40 14 L72 26" stroke="#2b2d30" stroke-width="2" fill="none"/><rect x="30" y="30" width="20" height="22" fill="#f1f1ee"/><path d="M30 35 H50 M30 40 H50 M30 45 H50" stroke="#c9c9c4" stroke-width=".8"/><rect x="0" y="52" width="80" height="8" fill="#80858a"/></svg>Снаружи</button>
+      </div>
+      <p id="hint"></p>
+      <div class="row" id="ovrow" hidden><label for="ov">Фото поверх модели</label><output id="ovv">50%</output></div>
+      <input type="range" id="ov" min="0" max="100" step="1" value="50" hidden aria-label="Прозрачность фото">
+    </div>
+    <div class="sec fold">
+      <div class="toggles">
+        <label><input type="checkbox" id="t-cabin" checked>Санблок</label>
+        <label><input type="checkbox" id="t-tires" checked>Шиномонтаж</label>
+        <label><input type="checkbox" id="t-dims" checked>Размеры</label>
+        <label><input type="checkbox" id="t-roof" checked>Кровля</label>
+        <label><input type="checkbox" id="t-cabroof" checked>Крыша санблока</label>
+        <label><input type="checkbox" id="t-store" checked>Склад</label>
+        <label><input type="checkbox" id="t-office" checked>Офис</label>
+        <label><input type="checkbox" id="t-offroof" checked>Крыша офиса</label>
+        <button class="tbtn" id="cabTop">Санблок сверху</button>
+        <button class="tbtn" id="storeView">Показать склад</button>
+        <button class="tbtn" id="st2View">Склад · 2 этаж</button>
+        <button class="tbtn" id="st1View">Склад · 1 этаж</button>
+        <button class="tbtn" id="officeView">Показать офис</button>
+        <button class="tbtn" id="offTop">Офис сверху</button>
+      </div>
+      <div class="row"><label for="door">Ворота подняты</label><output id="doorv">0,00 м</output></div>
+      <input type="range" id="door" min="0" max="4.5" step="0.05" value="0">
+    </div>
+    <details class="fold" id="helpbox" open>
+      <summary>Управление</summary>
+      <ul class="keys">
+        <li><span><kbd>↑</kbd><kbd>↓</kbd></span>лететь вперёд / назад</li>
+        <li><span><kbd>←</kbd><kbd>→</kbd></span>повернуть камеру</li>
+        <li><span><kbd>A</kbd><kbd>D</kbd></span>шаг влево / вправо</li>
+        <li><span><kbd>E</kbd><kbd>Q</kbd></span>выше / ниже</li>
+        <li><span><kbd>Shift</kbd></span>быстрее</li>
+        <li><span>мышь, палец</span>перетащить станок, тележку, ведро или санблок</li>
+        <li><span><kbd>[</kbd><kbd>]</kbd><kbd>R</kbd></span>повернуть выбранное на 15° / 90°</li>
+      </ul>
+      <p class="note">Предмет двигается по полу с шагом 5 см, с зажатым Alt без шага. Расстановка сохраняется в этом браузере.</p>
+    </details>
+    <details class="fold" id="eqbox" open>
+      <summary>Шиномонтажная зона</summary>
+      <div class="eq">
+        <button class="card" data-go="mo320">
+          <span class="t"><b>NORTEC MO320 Premium</b><span>шиномонтаж</span></span>
+          <dl>
+            <dt>Габарит</dt><dd>1,2 × 0,8 м, с лапой 1,25 м</dd>
+            <dt>Высота</dt><dd>стол 0,9 м · штанга 1,9 м</dd>
+            <dt>Зажим диска</dt><dd>снаружи 11–21″, изнутри 13–24″</dd>
+            <dt>Колесо, макс.</dt><dd>Ø 1150 мм, ширина 13″</dd>
+            <dt>Отжим борта</dt><dd>2500 кг</dd>
+            <dt>Стол</dt><dd>2 скорости, 0,75 кВт</dd>
+            <dt>Питание / воздух</dt><dd>400 В · 8–12 бар</dd>
+            <dt>Шум / вес</dt><dd>&lt;70 дБ · 300 кг</dd>
+          </dl>
+        </button>
+        <button class="card" data-go="wb220">
+          <span class="t"><b>NORTEC WB220L</b><span>балансировка</span></span>
+          <dl>
+            <dt>Габарит</dt><dd>≈ 1,0 × 0,9 м с валом</dd>
+            <dt>Высота</dt><dd>пульт 1,13 м · кожух 1,55 м</dd>
+            <dt>Диаметр диска</dt><dd>10–24″</dd>
+            <dt>Ширина диска</dt><dd>1,5–20″</dd>
+            <dt>Колесо, макс.</dt><dd>65 кг · вал 36 мм</dd>
+            <dt>Точность / цикл</dt><dd>1 г · 8 с</dd>
+            <dt>Питание</dt><dd>230 В · 0,18 кВт</dd>
+            <dt>Вес</dt><dd>60 кг · Польша, 24 мес.</dd>
+          </dl>
+        </button>
+        <div class="chips" aria-label="Что подвести к зоне"><span>розетка 400 В</span><span>розетка 230 В</span><span>воздух 8–12 бар</span></div>
+        <button class="btn" id="resetLayout">Вернуть расстановку как на фото</button>
+      </div>
+      <p class="note">Станки стоят вдоль чёрной стены во втором пролёте, как на фото 4, стеллаж с шинами впереди. Характеристики взяты у производителя. Габариты шиномонтажа сняты с аналога того же класса (Balticdiag BD-810 с лапой BD310), балансировки — по типовым размерам таких станков. Стеллаж с шинами (1,45 × 0,55 × 1,66 м) стоит там же, где на фото. Размерные линии станков видны вблизи, если включены «Размеры».</p>
+    </details>
+    <details class="fold" id="dimsbox">
+      <summary>Размеры модели</summary>
+      <div class="form" id="form"></div>
+      <p class="note">Длина 39,88 м внутри (40 м снаружи), ширина 17,5 м и шаг рам 5 м взяты из ваших данных. Остальное измерено по фото через перспективу, точность около ±0,2–0,3 м. Если знаете точные цифры, впишите их, и модель перестроится.</p>
+      <p class="note"><button class="btn" id="reset">Вернуть размеры с фото</button></p>
+    </details>
+  </aside>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+// ---------- parameters (metres). Length/bay from the owner; the rest measured from the photos ----------
+const DEFAULTS = { W:17.5, len:39.88, H:5.75, pitch:5.5, bay:5, bays:8, band:2.6, stW:6.32, stG:2.6, stH:5.0, stDoor:1.5,
+  doorX:5.18, doorW:4.0, doorH:4.5, cabW:5.0, cabD:2.0, cabH:2.8, offW:7.5, offD:10.0, offG:2.5, offH:2.87 };
+const P = { ...DEFAULTS, doorOpen:0, cabin:true, cabRoof:true, tires:true, store:true, storeCut:0, office:true, offRoof:true, dims:true, roof:true };
+const FIELDS = [
+  ['Зал'], ['len','Длина зала внутри',20,80], ['W','Ширина зала',6,30], ['H','Высота до карниза',3,10], ['pitch','Уклон кровли, °',0,15],
+  ['bay','Шаг рам',3,8], ['bays','Число пролётов',2,12,1], ['band','Чёрный цоколь торца',0,4],
+  ['Секционные ворота'], ['doorX','Отступ от чёрной стены',0.5,20], ['doorW','Ширина',2,8], ['doorH','Высота',2,7],
+  ['Санблок'], ['cabW','Длина вдоль стены',1.5,10], ['cabD','Глубина',1.2,4], ['cabH','Высота',2,3.5],
+  ['Склад'], ['stW','Ширина от чёрной стены',3,15], ['stG','Высота 1 этажа',2.2,3.2], ['stH','Верх стен склада',4.3,5.4], ['stDoor','Ширина двери',.8,3],
+  ['Офис'], ['offW','Ширина вдоль торца',3,7.5], ['offD','Глубина от торца',3,20], ['offG','Высота стекла',2,2.8], ['offH','Верх офиса',2.6,3.6],
+];
+// camera solutions fitted to the photos (position, view direction, focal length and principal point in photo pixels)
+const PHOTOS = {
+  p1:{src:'photos/1.webp',w:1312,h:1199,f:660,cx:656,cy:800.8,pos:[9.154,0.946,5.524],yaw:3.0307,cabin:false,tires:false,door:null,
+      hint:'Ракурс фото 1. Ползунок ниже смешивает фото и модель. На этом снимке санблока и станков ещё нет, поэтому они скрыты.'},
+  p2:{src:'photos/2.webp',w:1086,h:1448,f:692.6,cx:543,cy:692.6,pos:[5.780,1.698,-0.244],yaw:2.0878,cabin:false,tires:false,door:'open',
+      hint:'Ракурс фото 2: вид вдоль зала из проёма ворот. Все девять рам совпадают с фото, по ним проверен шаг 5 м и длина 40 м.'},
+  p3:{src:'photos/3.webp',w:1086,h:1448,f:557,cx:543,cy:770.5,pos:[5.575,1.1,4.251],yaw:-2.652,cabin:true,tires:false,door:0.9,
+      hint:'Ракурс фото 3, совпадение примерное. Линии санблока на этом фото сходятся не туда, куда линии стен: похоже, он вставлен в снимок.'},
+  p4:{src:'photos/4.webp',w:1448,h:1086,f:660,cx:659,cy:800.8,pos:[9.154,0.946,5.524],yaw:3.0307,cabin:true,tires:true,door:null,
+      hint:'Фото 4 — это фото 1 с дорисованной зоной. Слева и по центру снимок совпадает с моделью, правый пролёт на нём растянут. Станки на картинке примерно в 1,5 раза крупнее настоящих, в модели они в реальном размере.'},
+};
+const HINTS = {
+  corner:'Угол: чёрная продольная стена с крестовыми связями и торец с воротами. Летайте стрелками, станки и санблок перетаскивайте мышью.',
+  plan:'Вид сверху без кровли: весь зал 40 м и угловой пролёт с санблоком.',
+  outside:'Снаружи, со стороны ворот. Ползунок поднимает ворота.',
+  tires:'Шиномонтажная зона во втором пролёте, слева от санблока: шиномонтаж, балансировка и тележка с шинами, как на фото 4.',
+  mo320:'NORTEC MO320 Premium: пневмоколонна сзади, вспомогательная рука и отжим борта справа, держатель инструмента с манометром слева.',
+  store:'Склад в дальнем правом углу, если смотреть от ворот: 6,32 × 9,83 м, первый этаж 2,60 м, второй 2,40 м с полом. Деревянная лестница снаружи вдоль длинной стены: поднимается от ворот к площадке у двери второго этажа. Входная дверь первого этажа — в 1 м от дальнего торца.',
+  st2:'Второй этаж склада без потолка, одна открытая комната: кухня с микроволновкой, кофемашиной и кулером, стол на 6 человек, диван, раздевалка со шкафчиками.',
+  st1:'Первый этаж склада без второго этажа: стеллажи с запчастями, бочки для ветоши, аэрозолей и мусора, два еврокуба по 1000 л под масло и грязь. По центру столб 200 × 200, на нём брус 100 × 200 поперёк склада, от него к поперечной стене и к дальнему торцу балки 50 × 120 через 400 мм.',
+  cabtop:'Санблок без крыши, сверху: три прямые комнаты от входа до задней стены. Слева туалет, по центру умывальная со входом, справа электрощитовая.',
+  office:'Офис справа от ворот, 7,5 × 10 м. Стена от ворот: 0,75 белой + дверной блок 1,15 + 7,35 м стекла + 0,75 белой; фасад: 0,75 + 6 м стекла + 0,75; стена вдоль продольной — глухая. Рама алюминиевая 35 мм, секции стекла одинаковые. По высоте: профиль 35 + стекло 2500 + профиль 35 = 2,57 м до потолка, верх офиса 2,87 м.',
+  offtop:'Офис без крыши и потолка, сверху: на столбе 200 × 200 лежит брус 100 × 200 от стены до стены, от него к торцу с воротами и к фасаду идут балки 50 × 120 с шагом 400 мм. Стена офиса начинается в 0,14 м от стойки торца, стойка — в 0,62 м от ворот.',
+  wb220:'NORTEC WB220L: вал и кожух справа, кожух поднят, педаль у основания. Колесо садится на вал лицом к оператору.',
+};
+
+const $ = id => document.getElementById(id);
+const stage=$('stage'), canvas=$('c'), photo=$('photo'), labelsEl=$('labels'), panel=$('panel');
+const V = (x,y,z)=>new THREE.Vector3(x,y,z);
+const fmt = v => v.toFixed(2).replace('.',',')+' м';
+
+// ---------- renderer / scene ----------
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xdfe6ec);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 400);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true; controls.dampingFactor = 0.09; controls.maxDistance = 120;
+
+const hemi = new THREE.HemisphereLight(0xf4f7fa, 0xc4c1ba, 0.95); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffffff, 0.55);
+sun.castShadow = true; sun.shadow.mapSize.set(innerWidth<700?1024:2048, innerWidth<700?1024:2048);
+sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.03; sun.shadow.radius = 4;
+Object.assign(sun.shadow.camera,{left:-30,right:30,top:30,bottom:-30,near:1,far:120});
+scene.add(sun, sun.target);
+
+// ---------- procedural textures (1 texture tile = 1 m unless noted) ----------
+const aniso = renderer.capabilities.getMaxAnisotropy();
+function canvasTex(px, draw){
+  const c=document.createElement('canvas'); c.width=c.height=px; const g=c.getContext('2d'); draw(g,px);
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=aniso; return t;
+}
+const rnd = (a,b)=>a+Math.random()*(b-a);
+function speckle(g,n,px,a){ for(let i=0;i<n;i++){ g.fillStyle=Math.random()<.5?`rgba(0,0,0,${a})`:`rgba(255,255,255,${a})`; g.fillRect(Math.random()*px,Math.random()*px,1,1);} }
+const TEX = {
+  black: canvasTex(256,(g,s)=>{ g.fillStyle='#26272b'; g.fillRect(0,0,s,s);
+    for(let y=0;y<s;y+=6){ g.fillStyle='rgba(255,255,255,.03)'; g.fillRect(0,y,s,1); g.fillStyle='rgba(0,0,0,.14)'; g.fillRect(0,y+3,s,1);} speckle(g,3000,s,.05); }),
+  liner: canvasTex(256,(g,s)=>{ g.fillStyle='#e3e3df'; g.fillRect(0,0,s,s);
+    for(let x=0;x<s;x+=4){ g.fillStyle='rgba(0,0,0,.025)'; g.fillRect(x,0,1,s);}
+    for(let k=0;k<5;k++){ const x=Math.round(k*s/5); g.fillStyle='rgba(0,0,0,.13)'; g.fillRect(x,0,3,s); g.fillStyle='rgba(255,255,255,.55)'; g.fillRect(x+3,0,2,s);} }),
+  door: canvasTex(256,(g,s)=>{ g.fillStyle='#efefec'; g.fillRect(0,0,s,s);
+    for(let y=0;y<s;y+=8){ g.fillStyle='rgba(0,0,0,.07)'; g.fillRect(0,y,s,1); g.fillStyle='rgba(255,255,255,.6)'; g.fillRect(0,y+1,s,1);} }),
+  concrete: canvasTex(1024,(g,s)=>{ g.fillStyle='#b9bab9'; g.fillRect(0,0,s,s);   // tile = 4 m
+    const blob=(x,y,r,c)=>{ for(const ox of [-s,0,s]) for(const oy of [-s,0,s]){ const X=x+ox, Y=y+oy; if(X+r<0||X-r>s||Y+r<0||Y-r>s) continue;
+      const gr=g.createRadialGradient(X,Y,0,X,Y,r); gr.addColorStop(0,c); gr.addColorStop(1,'rgba(0,0,0,0)'); g.fillStyle=gr; g.fillRect(X-r,Y-r,2*r,2*r);} };
+    for(let i=0;i<360;i++) blob(rnd(0,s),rnd(0,s),rnd(25,150), Math.random()<.55?`rgba(70,72,74,${rnd(.02,.055)})`:`rgba(255,255,255,${rnd(.02,.06)})`);
+    g.lineCap='round'; for(let i=0;i<70;i++){ g.strokeStyle=`rgba(255,255,255,${rnd(.02,.05)})`; g.lineWidth=rnd(4,12); g.beginPath(); const r=rnd(60,260), x=rnd(0,s), y=rnd(0,s), a=rnd(0,6.28); g.arc(x,y,r,a,a+rnd(.4,1.4)); g.stroke(); }
+    speckle(g,60000,s,.07); }),
+  tile: canvasTex(256,(g,s)=>{ g.fillStyle='#bdb7ad'; g.fillRect(0,0,s,s); speckle(g,4000,s,.05);   // tile = 0.6 m
+    g.fillStyle='rgba(90,85,78,.55)'; g.fillRect(0,0,s,2); g.fillRect(0,0,2,s); }),
+  osb: canvasTex(256,(g,s)=>{ g.fillStyle='#cfa86e'; g.fillRect(0,0,s,s);                       // OSB board, tile = 1 m
+    const c=['#b98f55','#dcbb83','#a97f48','#e3c58f','#c39a5f'];
+    for(let i=0;i<900;i++){ g.save(); g.translate(Math.random()*s,Math.random()*s); g.rotate(Math.random()*Math.PI);
+      g.globalAlpha=.55; g.fillStyle=c[i%c.length]; g.fillRect(-rnd(4,12),-rnd(1.5,4),rnd(8,24),rnd(3,8)); g.restore(); } }),
+};
+
+// ---------- materials ----------
+const std = (color,o={})=>new THREE.MeshStandardMaterial({color,roughness:.6,metalness:0,...o});
+const M = {
+  steel: std(0xcfcabd,{roughness:.5,metalness:.12}),
+  black: std(0xffffff,{map:TEX.black,roughness:.52,metalness:.15}),
+  liner: std(0xffffff,{map:TEX.liner,roughness:.5,metalness:.05}),
+  ext: std(0x3f4246,{roughness:.7}),
+  joint: std(0x131416,{roughness:.8}), jointLip: std(0x45474b,{roughness:.6}),
+  deck: std(0xe6e8e9,{roughness:.5,metalness:.12,side:THREE.DoubleSide}),
+  roofTop: std(0x4c4f53,{roughness:.9}),
+  sky: new THREE.MeshStandardMaterial({color:0xf2f5f7,emissive:0xffffff,emissiveIntensity:.65,roughness:.3,transparent:true,opacity:.93,side:THREE.DoubleSide}),
+  floor: std(0xffffff,{map:TEX.concrete,roughness:.32,metalness:0,envMapIntensity:.7}),
+  floorJoint: std(0x7e8082,{roughness:.9}),
+  ground: std(0x7c8084,{roughness:.95}),
+  galv: std(0xbcc0c3,{roughness:.32,metalness:.85}),
+  chrome: std(0xe6e8ea,{roughness:.15,metalness:1}),
+  red: std(0xcf2a2e,{roughness:.4}), darkRed: std(0x5e1416,{roughness:.6}),
+  ebox: std(0xc9cac8,{roughness:.45,metalness:.2}),
+  utility: std(0xcbc7bd,{roughness:.55}),
+  cable: std(0x1d1e20,{roughness:.6}),
+  sect: std(0xffffff,{map:TEX.door,roughness:.45,metalness:.1}),
+  roller: std(0x2b2c2e,{roughness:.6}),
+  yellow: std(0xf0c000,{roughness:.45}),
+  cab: std(0xd7d6d2,{roughness:.6}), cabCap: std(0xe4e3e0,{roughness:.5}),
+  cabJoint: std(0xa9a8a4,{roughness:.7}), skirt: std(0x63666b,{roughness:.55}),
+  door: std(0x56595e,{roughness:.45,metalness:.25}), door2: std(0x6d7075,{roughness:.5,metalness:.2}),
+  inWall: std(0xddd6cb,{roughness:.8}), inCeil: std(0xe9e5de,{roughness:.9}),
+  tile: std(0xffffff,{map:TEX.tile,roughness:.35}),
+  ceramic: std(0xf7f7f5,{roughness:.2}), mirror: std(0xdfe3e6,{roughness:.04,metalness:1}),
+  plastic: std(0x1c1d1f,{roughness:.4}),
+  lamp: std(0xf4f4f2,{emissive:0xffffff,emissiveIntensity:1.6}),
+  blue: std(0x1f6fd6,{roughness:.38,metalness:.15}), blackSteel: std(0x18191b,{roughness:.45,metalness:.3}),
+  hood: std(0x151617,{roughness:.55,side:THREE.DoubleSide}), alu: std(0xb8bbbf,{roughness:.28,metalness:.9}),
+  rubber: std(0x19191a,{roughness:.88,side:THREE.DoubleSide}), tray: std(0x0e0f10,{roughness:.6}),
+  table: std(0xc9ccd0,{roughness:.35,metalness:.5}),
+  wood: std(0xb48c5c,{roughness:.55}), fridge: std(0xeeeeec,{roughness:.3,metalness:.1}),
+  timber: std(0xa97c47,{roughness:.8}), osb: std(0xffffff,{map:TEX.osb,roughness:.85}), ply: std(0xc49a62,{roughness:.6}),
+  lam: std(0xbfae92,{roughness:.6}), locker: std(0x5f7a8c,{roughness:.45,metalness:.3}), lockerDoor: std(0x6d8a9d,{roughness:.4,metalness:.3}),
+  sofa: std(0x3c4147,{roughness:.95}), sofa2: std(0x55606b,{roughness:.95}),
+  rackPost: std(0x2459a8,{roughness:.45,metalness:.2}), rackBeam: std(0xe0761c,{roughness:.45,metalness:.2}),
+  card: std(0xb7895a,{roughness:.9}), binBlue: std(0x2f6fb3,{roughness:.5}), binRed: std(0xb8352c,{roughness:.5}), binGray: std(0x7d868c,{roughness:.5}),
+  drumRed: std(0xb3302a,{roughness:.45,metalness:.3}), drumYellow: std(0xe2b21c,{roughness:.45,metalness:.3}), drumBlue: std(0x2a5d9e,{roughness:.45,metalness:.3}),
+  ibc: new THREE.MeshStandardMaterial({color:0xf1efe4,roughness:.35,transparent:true,opacity:.86}),
+  bottle: new THREE.MeshStandardMaterial({color:0x8fc3e8,roughness:.1,transparent:true,opacity:.7}),
+  grate: std(0x8d9196,{roughness:.6,metalness:.5}), stairSteel: std(0x55595e,{roughness:.5,metalness:.4}),
+  dim: new THREE.MeshBasicMaterial({color:0xe2ad2a}),
+  glass: new THREE.MeshStandardMaterial({color:0xd6eaf1,roughness:.05,metalness:.1,transparent:true,opacity:.26,depthWrite:false,side:THREE.DoubleSide}),
+  frame: std(0x3a3d42,{roughness:.4,metalness:.4}),
+};
+
+// ---------- geometry helpers ----------
+const BOX = new THREE.BoxGeometry(1,1,1);
+let G, buildGeos=[], buildMats=[], dims=[], doorParts=null;
+const keep = g=>(buildGeos.push(g),g);
+function mesh(geo,mat,parent=G,cast=true){ const m=new THREE.Mesh(geo,mat); m.castShadow=cast; m.receiveShadow=true; parent.add(m); return m; }
+function box(mat,sx,sy,sz,x,y,z,parent=G,cast=true){ const m=mesh(BOX,mat,parent,cast); m.scale.set(sx,sy,sz); m.position.set(x,y,z); return m; }
+function basis(a,b,upHint){
+  const dir=b.clone().sub(a), len=dir.length(); dir.normalize();
+  let up=upHint.clone().addScaledVector(dir,-upHint.dot(dir));
+  if(up.lengthSq()<1e-8){ up=Math.abs(dir.y)<.9?V(0,1,0):V(1,0,0); up.addScaledVector(dir,-up.dot(dir)); }
+  up.normalize(); const side=new THREE.Vector3().crossVectors(dir,up);
+  return {len, q:new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(dir,up,side)), mid:a.clone().add(b).multiplyScalar(.5)};
+}
+// rectangular member a→b: h along upHint (made perpendicular), w across
+function bar(mat,a,b,h,w,upHint=V(0,1,0),parent=G,cast=true){
+  const {len,q,mid}=basis(a,b,upHint); const m=mesh(BOX,mat,parent,cast); m.scale.set(len,h,w); m.quaternion.copy(q); m.position.copy(mid); return m;
+}
+// I-section a→b: depth along upHint, flange width across
+function ibeam(mat,a,b,depth,width,upHint,parent=G){
+  const {len,q,mid}=basis(a,b,upHint); const g=new THREE.Group(); g.quaternion.copy(q); g.position.copy(mid); parent.add(g);
+  const tf=.016; box(mat,len,depth-2*tf,.011,0,0,0,g); box(mat,len,tf,width,0,depth/2-tf/2,0,g); box(mat,len,tf,width,0,-(depth/2-tf/2),0,g);
+}
+function cyl(mat,r,h,x,y,z,axis='y',parent=G,seg=20){
+  const g=keep(new THREE.CylinderGeometry(r,r,h,seg)); const m=mesh(g,mat,parent);
+  if(axis==='x') m.rotation.z=Math.PI/2; if(axis==='z') m.rotation.x=Math.PI/2; m.position.set(x,y,z); return m;
+}
+function texMat(base,rx,ry){ const m=base.clone(); m.map=base.map.clone(); m.map.repeat.set(rx,ry); m.map.needsUpdate=true; buildMats.push(m); return m; }
+const L = ()=>P.len;                                         // inside length; frames stay on the 5 m grid from the gate
+const tanP = ()=>Math.tan(P.pitch*Math.PI/180);
+const yD = x=>P.H+tanP()*Math.max(0,Math.min(x,P.W-x));     // underside of roof deck
+const ridgeH = ()=>P.H+tanP()*P.W/2;
+
+// ---------- the hall ----------
+function buildFrames(){
+  const {W,H,bay,bays}=P, Lh=L(), d=.36;
+  const RF=roofFrame=new THREE.Group(); G.add(RF);       // rafters and roof bracing hide together with the roof
+  for(let k=0;k<=bays;k++){
+    const z = k===0?0.09:k===bays?Lh-0.09:k*bay;                    // end columns stand against the end walls
+    for(const xc of [0.23,W-0.23]){                                   // 0.18 m along the wall, 0.40 m out, front face 0.43 m off the wall (6.32 − 5.89)
+      ibeam(M.steel,V(xc,0,z),V(xc,yD(xc)-0.03,z),.40,.18,V(1,0,0));
+      box(M.steel,.48,.02,.26,xc,.01,z);
+    }
+    const ridge=V(W/2,yD(W/2)-d/2,z);
+    ibeam(M.steel,V(0.02,yD(0.02)-d/2,z),ridge,d,.17,V(0,1,0),RF);
+    ibeam(M.steel,ridge,V(W-0.02,yD(W-0.02)-d/2,z),d,.17,V(0,1,0),RF);
+    for(const s of [1,-1]){                                      // eave haunches
+      const x0=s>0?.43:W-.43, x1=s>0?1.85:W-1.85, y0=yD(x0)-d, y1=yD(x1)-d, hh=.42;
+      const sh=new THREE.Shape([new THREE.Vector2(x0,y0),new THREE.Vector2(x1,y1),new THREE.Vector2(x0,y0-hh)]);
+      const m=mesh(keep(new THREE.ExtrudeGeometry(sh,{depth:.011,bevelEnabled:false})),M.steel,RF); m.position.z=z-.0055;
+      bar(M.steel,V(x0,y0-hh,z),V(x1,y1,z),.016,.17,V(0,1,0),RF);
+    }
+  }
+  const xs=Math.min(3.75,W/2-0.8);
+  for(const xc of [0.22,W-0.22]) bar(M.steel,V(xc,H-0.1,0),V(xc,H-0.1,Lh),.14,.14);          // eave struts
+  for(const x of [xs,W-xs]) bar(M.steel,V(x,yD(x)-0.07,0),V(x,yD(x)-0.07,Lh),.1,.1,V(0,1,0),RF);   // roof struts
+  const pairs=[[0,bay],[bay,2*bay],[(bays-2)*bay,(bays-1)*bay],[(bays-1)*bay,Lh]];
+  for(const [za,zb] of pairs) for(const side of [0,1]){                                     // roof X-bracing
+    const xa=side?W-0.22:0.22, xb=side?W-xs:xs, ya=yD(xa)-0.05, yb=yD(xb)-0.05;
+    bar(M.steel,V(xa,ya,za),V(xb,yb,zb),.035,.035,V(0,1,0),RF); bar(M.steel,V(xa,ya,zb),V(xb,yb,za),.035,.035,V(0,1,0),RF);
+  }
+  const flat=(a,b)=>bar(M.steel,a,b,.022,.085,V(1,0,0));
+  for(const [za,zb] of [[0.4,bay-0.2],[(bays-1)*bay+0.2,Lh-0.4]]) for(const xw of [0.07,W-0.07]){   // wall bracing, two stacked X
+    const yl=.1, ym=H/2, yt=H-.2;
+    bar(M.steel,V(xw,ym,za),V(xw,ym,zb),.09,.09);
+    flat(V(xw,yl,za),V(xw,ym,zb)); flat(V(xw,ym,za),V(xw,yl,zb)); flat(V(xw,ym,za),V(xw,yt,zb)); flat(V(xw,yt,za),V(xw,ym,zb));
+  }
+}
+
+function endWallShape(pts){ return new THREE.Shape(pts.map(p=>new THREE.Vector2(p[0],p[1]))); }
+function buildEndWall(zIn, withDoor){
+  const {W,H,band}=P, top=[[W,H+0.12],[W/2,ridgeH()+0.12],[0,H+0.12]];
+  const d0=P.doorX, d1=P.doorX+P.doorW, dh=P.doorH, sgn=zIn<1?-1:1;
+  const pieces=[];
+  if(withDoor){
+    if(dh>=band){ pieces.push([M.black,[[0,0],[d0,0],[d0,band],[0,band]]],[M.black,[[d1,0],[W,0],[W,band],[d1,band]]],
+                              [M.liner,[[0,band],[d0,band],[d0,dh],[d1,dh],[d1,band],[W,band],...top]]); }
+    else { pieces.push([M.black,[[0,0],[d0,0],[d0,dh],[d1,dh],[d1,0],[W,0],[W,band],[0,band]]],[M.liner,[[0,band],[W,band],...top]]); }
+  } else pieces.push([M.black,[[0,0],[W,0],[W,band],[0,band]]],[M.liner,[[0,band],[W,band],...top]]);
+  for(const [mat,pts] of pieces){
+    const m=mesh(keep(new THREE.ExtrudeGeometry(endWallShape(pts),{depth:.12,bevelEnabled:false})),[mat,M.ext],G,false);
+    m.position.z = sgn<0 ? zIn-0.12 : zIn;
+  }
+  // girts, posts and bracing on the inside face
+  const zf = zIn + (sgn<0?0.06:-0.06), zp = zIn + (sgn<0?0.1:-0.1);
+  const posts = (withDoor ? [1.4, d0-0.35, d1+0.695, W-(d0-0.35), W-1.4] : [W/3, 2*W/3])     // post right of the gate starts 0.62 m from it (owner)
+    .filter((x,i,a)=>a.findIndex(y=>Math.abs(y-x)<0.3)===i);                                 // mirror the corner posts on wide walls
+  for(const x of posts) if(x>0.5 && x<W-0.5) ibeam(M.steel,V(x,0,zp),V(x,yD(x)-0.37,zp),.2,.15,V(0,0,1));
+  const girt=(xa,xb,y)=>{ if(xb-xa>0.2) bar(M.steel,V(xa,y,zf),V(xb,y,zf),.15,.06); };
+  const gy=band+0.08, gy2=Math.min(4.8,P.H-0.6);
+  if(withDoor){ girt(0.3,d0-0.42,gy); girt(d1+0.42,W-0.3,gy); if(gy2>dh+0.25) girt(0.3,W-0.3,gy2); else { girt(0.3,d0-0.42,gy2); girt(d1+0.42,W-0.3,gy2);}
+    bar(M.steel,V(d0-0.42,dh+0.1,zf),V(d1+0.42,dh+0.1,zf),.2,.08); }
+  else { girt(0.3,W-0.3,gy); girt(0.3,W-0.3,gy2); }
+  const flat=(a,b)=>bar(M.steel,a,b,.022,.085,V(0,0,1));
+  const xA = withDoor ? d0-0.45 : W/3-0.1, xB = withDoor ? Math.max(d1+0.45,W-(d0-0.45)) : 2*W/3+0.1;   // X-bracing in both end panels
+  for(const [xa,xb] of [[0.3,xA],[xB,W-0.3]]){
+    const ya=gy+0.1, yb=Math.min(yD(xa),yD(xb))-0.45; if(xb-xa<0.8 || yb-ya<0.8) continue;
+    flat(V(xa,ya,zf),V(xb,yb,zf)); flat(V(xa,yb,zf),V(xb,ya,zf));
+  }
+}
+
+function buildWalls(){
+  const {W,H}=P, Lh=L(), hh=H+0.14;
+  for(const s of [0,1]){
+    const inner=texMat(M.black,Lh+0.24,hh);
+    const mats = s ? [M.ext,inner,M.ext,M.ext,M.ext,M.ext] : [inner,M.ext,M.ext,M.ext,M.ext,M.ext];
+    const m=mesh(keep(new THREE.BoxGeometry(.12,hh,Lh+0.24)),mats,G,false); m.position.set(s?W+0.06:-0.06,hh/2,Lh/2);
+    for(const hj of [2.6,5.2]) if(hj<H-.05){                         // black panels are 2.60 m high (owner)
+      const x=s?W-0.003:0.003;
+      box(M.joint,.006,.012,Lh,x,hj,Lh/2,G,false); box(M.jointLip,.006,.006,Lh,x,hj-0.01,Lh/2,G,false);
+    }
+  }
+  buildEndWall(0,true); buildEndWall(Lh,false);
+}
+
+function corrugated(xa,xb,z0,z1){
+  const per=.25, rib=.1, prof=u=>{ const m=((u%per)+per)%per; return m<.07?0:m<.10?(m-.07)/.03*rib:m<.22?rib:rib-(m-.22)/.03*rib; };
+  const xs=new Set([xa,xb]); if(P.W/2>xa && P.W/2<xb) xs.add(P.W/2);   // keep the ridge kink exact
+  for(let k=Math.floor(xa/per);k*per<xb;k++) for(const o of [0,.07,.10,.22]){ const x=k*per+o; if(x>xa&&x<xb) xs.add(x); }
+  const arr=[...xs].sort((a,b)=>a-b), pos=[];
+  for(let i=0;i<arr.length-1;i++){ const a=arr[i], b=arr[i+1], ya=yD(a)+prof(a), yb=yD(b)+prof(b);
+    pos.push(a,ya,z0, b,yb,z0, b,yb,z1, a,ya,z0, b,yb,z1, a,ya,z1); }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); g.computeVertexNormals(); return keep(g);
+}
+let roofGroup, roofFrame;
+function setRoof(v){ P.roof=v; if(roofGroup) roofGroup.visible=v; if(roofFrame) roofFrame.visible=v; }
+function buildRoof(){
+  const {W}=P, Lh=L(); roofGroup=new THREE.Group(); G.add(roofGroup);
+  const sw=Math.min(2.6,W*0.3), xs0=Math.min(4.7,W/2-sw/2), xs1=xs0+sw;   // rooflight 4.7–7.3 m from the black wall, as on photo 2
+  const zs0=Math.min(2*P.bay,Lh/2-1), zs1=Math.max((P.bays-2)*P.bay,Lh/2+1);
+  const deck=(xa,xb,z0,z1)=>mesh(corrugated(xa,xb,z0,z1),M.deck,roofGroup,false);
+  deck(0,W/2,0,zs0); deck(W/2,W,0,zs0); deck(0,W/2,zs1,Lh); deck(W/2,W,zs1,Lh);
+  deck(0,xs0,zs0,zs1); deck(xs1,W,zs0,zs1);
+  // barrel-vault rooflight along the ridge
+  const base=Math.max(yD(xs0),yD(xs1))+0.28, rise=Math.min(.6,sw*.25), n=18, pos=[];
+  const arc=i=>[xs0+sw*i/n, base+rise*Math.sin(Math.PI*i/n)];
+  for(let i=0;i<n;i++){ const [a,ya]=arc(i), [b,yb]=arc(i+1); pos.push(a,ya,zs0, b,yb,zs0, b,yb,zs1, a,ya,zs0, b,yb,zs1, a,ya,zs1); }
+  const sg=new THREE.BufferGeometry(); sg.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); sg.computeVertexNormals();
+  mesh(keep(sg),M.sky,roofGroup,false);
+  for(const z of [zs0,zs1]){ const sh=new THREE.Shape(); sh.moveTo(xs0,yD(xs0)); for(let i=0;i<=n;i++){ const [x,y]=arc(i); sh.lineTo(x,y);} sh.lineTo(xs1,yD(xs1)); if(xs0<W/2 && W/2<xs1) sh.lineTo(W/2,ridgeH());
+    const m=mesh(keep(new THREE.ShapeGeometry(sh)),M.sky,roofGroup,false); m.position.z=z; }
+  for(const x of [xs0,xs1]){ const h=base-yD(x)+.08; bar(M.cabCap,V(x,yD(x)+h/2-.04,zs0),V(x,yD(x)+h/2-.04,zs1),h,.04,V(0,1,0),roofGroup,false); }   // curbs up to the level vault
+  for(let z=zs0;z<=zs1+1e-6;z+=(zs1-zs0)/Math.max(1,Math.round((zs1-zs0)/1.25))){
+    for(let i=0;i<n;i++){ const [a,ya]=arc(i), [b,yb]=arc(i+1); bar(M.cabCap,V(a,ya-0.02,z),V(b,yb-0.02,z),.04,.035,V(0,1,0),roofGroup,false); } }
+  // outer roof skin (seen from outside)
+  const skin=(xa,xb,z0,z1)=>{ if(xa<W/2 && xb>W/2){ skin(xa,W/2,z0,z1); skin(W/2,xb,z0,z1); return; }
+    const ya=yD(xa)+0.22, yb=yD(xb)+0.22, len=Math.hypot(xb-xa,yb-ya);
+    const m=box(M.roofTop,len,.05,z1-z0,(xa+xb)/2,(ya+yb)/2,(z0+z1)/2,roofGroup,false); m.rotation.z=Math.atan2(yb-ya,xb-xa); };
+  skin(-0.2,W/2,-0.2,zs0); skin(W/2,W+0.2,-0.2,zs0); skin(-0.2,W/2,zs1,Lh+0.2); skin(W/2,W+0.2,zs1,Lh+0.2);
+  skin(-0.2,xs0,zs0,zs1); skin(xs1,W+0.2,zs0,zs1);
+  setRoof(P.roof);
+}
+
+function buildFloor(){
+  const {W}=P, Lh=L();
+  const fm=texMat(M.floor,W/4,Lh/4);
+  const g=keep(new THREE.PlaneGeometry(W,Lh)); g.rotateX(-Math.PI/2);
+  const m=mesh(g,fm,G,false); m.position.set(W/2,0,Lh/2);
+  box(M.floorJoint,.008,.002,Lh,W/2,.001,Lh/2,G,false);
+  for(let k=1;k<P.bays;k++) box(M.floorJoint,W,.002,.008,W/2,.001,k*P.bay,G,false);
+  const gr=keep(new THREE.PlaneGeometry(260,260)); gr.rotateX(-Math.PI/2); const gm=mesh(gr,M.ground,G,false); gm.position.set(W/2,-0.02,Lh/2);
+  box(M.floor,P.doorW+2.4,.04,3,P.doorX+P.doorW/2,-0.0,-1.62,G,false);   // apron in front of the door
+}
+
+// ---------- fittings seen on the photos ----------
+function buildFittings(){
+  // corner of end wall: utility cover panel with water pipes (photo 1)
+  box(M.utility,.67,2.3,.05,0.825,1.15,0.03);
+  bar(M.galv,V(0.36,0,0.09),V(0.36,2.55,0.09),.045,.045); bar(M.galv,V(0.44,0,0.1),V(0.44,2.32,0.1),.035,.035);
+  box(M.red,.06,.05,.09,.44,.82,.13); box(M.red,.03,.12,.03,.44,.88,.17);
+  behindCabin=new THREE.Group(); G.add(behindCabin);                 // things from photo 1 that the WC unit stands on
+  const hose=mesh(keep(new THREE.TorusGeometry(.13,.014,8,24,Math.PI)),M.cable,behindCabin); hose.position.set(.3,.32,.14); hose.rotation.y=Math.PI/2;
+  // electrical box with cable on the braced bay (photo 1), next to the 0.40 m corner column
+  box(M.ebox,.22,.63,.6,.19,1.875,.8); box(M.chrome,.03,.05,.03,.31,1.9,1.04);
+  bar(M.cable,V(.12,2.19,.92),V(.12,3.4,.92),.016,.016); bar(M.ebox,V(.1,0,1.04),V(.1,1.56,1.04),.03,.03);
+  // two metal cylinders on the floor
+  cyl(M.chrome,.08,.75,.13,.375,1.95,'y',behindCabin); cyl(M.chrome,.08,.75,.13,.375,2.2,'y',behindCabin);
+  behindCabin.visible=!P.cabin;
+  // fire hose reel (photo 1, third bay)
+  const zr=Math.min(13.7,L()-1.5);
+  cyl(M.red,.31,.2,.27,1.36,zr,'x',G,32); cyl(M.darkRed,.12,.21,.27,1.36,zr,'x'); cyl(M.chrome,.05,.22,.27,1.36,zr,'x');
+  bar(M.galv,V(.02,1.36,zr),V(.17,1.36,zr),.05,.05);
+  box(M.ebox,.08,.63,.16,.09,.465,zr-.04); bar(M.galv,V(.1,0,zr-.1),V(.1,1.36,zr-.1),.03,.03); box(M.red,.05,.04,.06,.12,.9,zr-.1);
+}
+
+function buildDoor(){
+  const d0=P.doorX, d1=P.doorX+P.doorW, dh=P.doorH, zd=.07, r=.38;
+  const yTrack=Math.max(dh+r+0.12, Math.min(yD(d0),yD(d1))-0.36-0.12), yv=yTrack-r, arc=Math.PI/2*r;
+  const Lh=Math.max(.6,2*dh-yv-arc+.25);
+  const path=s=>s<=yv?[s,zd]:s<=yv+arc?[yv+r*Math.sin((s-yv)/r),zd+r*(1-Math.cos((s-yv)/r))]:[yv+r,zd+r+(s-yv-arc)];
+  const n=Math.max(3,Math.round(dh/0.5)), sh=dh/n, g=new THREE.Group(); G.add(g);
+  const mat=texMat(M.sect,P.doorW+0.1,sh), sections=[];
+  for(let i=0;i<n;i++){
+    const sg=new THREE.Group(); g.add(sg);
+    box(mat,P.doorW+0.1,sh-0.006,.045,0,0,0,sg);
+    for(const x of [-(P.doorW/2+0.035),P.doorW/2+0.035]){ box(M.galv,.03,.09,.07,x,-sh/2+.06,.05,sg); box(M.roller,.05,.05,.05,x+(x<0?-.02:.02),-sh/2+.03,.07,sg); }
+    sections.push(sg);
+  }
+  box(M.roller,P.doorW+0.1,.03,.05,0,-sh/2+0.015,0,sections[0]);                   // bottom seal
+  box(M.galv,.06,.03,.05,P.doorW*0.12,-sh/2+.25,.045,sections[0]);                 // lock handle
+  for(const x of [d0-0.07,d1+0.07]){                                                // guides
+    bar(M.galv,V(x,0,zd+.03),V(x,yv,zd+.03),.06,.1,V(1,0,0));
+    let prev=path(yv); for(let k=1;k<=6;k++){ const p=path(yv+arc*k/6); bar(M.galv,V(x,prev[0],prev[1]+.03),V(x,p[0],p[1]+.03),.06,.1,V(1,0,0)); prev=p; }
+    const zEnd=zd+r+Lh; bar(M.galv,V(x,yv+r,zd+r),V(x,yv+r,zEnd),.1,.06,V(0,1,0));
+    bar(M.galv,V(x,yv+r,zEnd),V(x,yD(x)+0.02,zEnd),.05,.05); bar(M.galv,V(x,yv+r,zd+r+Lh*.45),V(x,yD(x)+0.02,zd+r+Lh*.45),.04,.04);
+  }
+  bar(M.galv,V(d0-0.07,yv+r+0.06,zd+r+Lh),V(d1+0.07,yv+r+0.06,zd+r+Lh),.05,.05);
+  bar(M.galv,V(d0-0.3,dh+0.32,0.2),V(d1+0.3,dh+0.32,0.2),.05,.05);                  // spring shaft
+  for(const x of [d0+0.05,d1-0.05]) cyl(M.galv,.09,.08,x,dh+0.32,0.2,'x');
+  for(const x of [d0-0.4,d1+0.4]){ cyl(M.yellow,.085,1.2,x,.6,-.55); cyl(M.plastic,.087,.08,x,1.0,-.55); }   // bollards outside
+  doorParts={sections,path,sh,dh,cx:(d0+d1)/2};
+  placeDoor();
+}
+function placeDoor(){
+  if(!doorParts) return; const {sections,path,sh,dh,cx}=doorParts, lift=Math.min(P.doorOpen,dh);
+  sections.forEach((sg,i)=>{ const a=path(i*sh+lift), b=path((i+1)*sh+lift);
+    sg.position.set(cx,(a[0]+b[0])/2,(a[1]+b[1])/2); sg.rotation.x=Math.atan2(b[1]-a[1],b[0]-a[0]); });
+}
+
+let cabinGroup, cabinLight, cabRoofGroup, cabLeaves=[], behindCabin;
+function placeCabDoors(){ for(const p of cabLeaves) p.rotation.y=P.cabRoof?0:1.05; }   // doors swing open when the roof is off
+function buildCabin(){
+  const g=cabinGroup=new THREE.Group();
+  // back wall runs inside the columns; the end wall at the 5 m column runs through its centre, the unit stays cabW long.
+  // The electrical room has no back wall (owner): its end wall and partition run on to the black wall.
+  const t=.06, x0=.12, D=P.cabD, Wc=P.cabW, Hc=P.cabH, x1=x0+D, z1=Math.max(Wc+.01,P.bay+t/2), z0=z1-Wc;
+  const dw=.8, dh=Math.min(2.3,Hc-0.35), dc=z0+Wc/2, da=dc-dw/2, db=dc+dw/2;
+  box(M.cab,x1,Hc,t,x1/2,Hc/2,z0+t/2,g); box(M.cab,D,Hc,t,x0+D/2,Hc/2,z1-t/2,g);
+  box(M.cab,t,Hc,da-z0,x1-t/2,Hc/2,(z0+da)/2,g); box(M.cab,t,Hc,z1-db,x1-t/2,Hc/2,(db+z1)/2,g); box(M.cab,t,Hc-dh,dw,x1-t/2,(dh+Hc)/2,dc,g);
+  box(M.skirt,.012,.11,da-z0,x1+.006,.055,(z0+da)/2,g); box(M.skirt,.012,.11,z1-db,x1+.006,.055,(db+z1)/2,g);
+  box(M.skirt,D,.11,.012,x0+D/2,.055,z1+.006,g); box(M.skirt,x1,.11,.012,x1/2,.055,z0-.006,g);
+  for(const zj of [z0+1.15,z1-1.15]) if(zj<da-0.08||zj>db+0.08) box(M.cabJoint,.004,Hc-.13,.008,x1+.002,Hc/2+.06,zj,g);
+  for(const xj of [x0+D/2]) box(M.cabJoint,.008,Hc-.13,.004,xj,Hc/2+.06,z1+.002,g);
+  const fw=.045;                                                                      // frame + leaf (opens inward, hinged on the electrical-room side)
+  box(M.door,.1,dh,fw,x1+.01,dh/2,da+fw/2,g); box(M.door,.1,dh,fw,x1+.01,dh/2,db-fw/2,g); box(M.door,.1,fw,dw,x1+.01,dh-fw/2,dc,g);
+  const piv=new THREE.Group(); piv.position.set(x1-t,0,da+fw); piv.rotation.y=-1.4; g.add(piv);
+  const lw=dw-2*fw; box(M.door,.045,dh-fw-.01,lw,-.0225,(dh-fw)/2,lw/2,piv);
+  box(M.chrome,.05,.022,.14,-.07,1.05,lw-.1,piv); box(M.chrome,.05,.022,.14,.025,1.05,lw-.1,piv);
+  box(M.lamp,.07,.09,.46,x1+.035,dh+.28,dc,g);
+  // ---- interior: three straight rooms, each from the entrance wall to the back wall:
+  //      toilet (left), washroom with the entrance (middle), electrical room (right) ----
+  const pt=.07, ih=Hc-.3, ix0=x0+t, ix1=x1-t, iz0=z0+t, iz1=z1-t, inD=ix1-ix0;
+  const rw=(iz1-iz0-2*pt)/3, lz0=iz0+rw+pt/2, lz1=lz0+rw+pt;                                   // equal widths, partition centre lines
+  const dB=ix1-.25, dA=dB-.8, dh2=Math.min(2.05,ih-.15);                                      // 0.8 m side doors after 0.25 m of wall from the front
+  const eb=lz0-pt/2;                                                                             // electrical room: iz0..eb, reaching the black wall
+  box(M.cab,t,Hc,z1-eb,x0+t/2,Hc/2,(eb+z1)/2,g);                                               // back wall behind the washroom and the toilet only
+  const rg=cabRoofGroup=new THREE.Group(); g.add(rg); cabLeaves=[];
+  box(M.cabCap,D+.04,.05,Wc+.04,x0+D/2,Hc+.02,z0+Wc/2,rg);                                   // roof slab
+  box(M.cabCap,x0,.05,eb-z0,x0/2,Hc+.02,(z0+eb)/2,rg);                                        // and over the electrical room to the black wall
+  box(M.inCeil,inD,.03,iz1-iz0,(ix0+ix1)/2,ih+.015,(iz0+iz1)/2,rg);                           // suspended ceiling
+  box(M.inCeil,ix0,.03,eb-iz0,ix0/2,ih+.015,(iz0+eb)/2,rg);
+  for(const z of [(lz1+iz1)/2,dc,(iz0+lz0)/2]) box(M.lamp,.12,.01,.12,(ix0+ix1)/2,ih-.005,z,rg,false);
+  const tm=texMat(M.tile,inD/.6,(iz1-iz0)/.6); box(tm,inD,.01,iz1-iz0,(ix0+ix1)/2,.006,(iz0+iz1)/2,g);
+  box(texMat(M.tile,ix0/.6,(eb-iz0)/.6),ix0,.01,eb-iz0,ix0/2,.006,(iz0+eb)/2,g);
+  const part=(xa,xb,z)=>{ if(xb-xa>.01) box(M.inWall,xb-xa,ih,pt,(xa+xb)/2,ih/2,z,g); };
+  for(const z of [lz0,lz1]){ part(z===lz0?0:ix0,dA,z); part(dB,ix1,z); box(M.inWall,dB-dA,ih-dh2,pt,(dA+dB)/2,(ih+dh2)/2,z,g); }
+  for(const [z,hx,s] of [[lz1,dB,-1],[lz0,dA,1]]){                                             // toilet door hinged at the front so it clears the WC
+    const p=new THREE.Group(); p.position.set(hx,0,z); g.add(p); cabLeaves.push(p);
+    box(M.door2,dB-dA-.02,dh2-.02,.04,s*(dB-dA)/2,(dh2-.02)/2,0,p);
+    for(const k of [1,-1]) box(M.chrome,.12,.02,.025,s*(dB-dA-.13),1.0,k*.035,p);
+  }
+  const fx=ix0;                                                                                  // washroom: basin on the back wall, facing the entrance
+  box(M.ceramic,.4,.12,.52,fx+.2,.84,dc,g); box(M.plastic,.3,.02,.4,fx+.215,.905,dc,g);
+  cyl(M.chrome,.012,.14,fx+.065,.97,dc,'y',g); cyl(M.chrome,.025,.25,fx+.105,.62,dc,'y',g);
+  box(M.mirror,.012,.62,.52,fx+.007,1.55,dc,g); box(M.plastic,.08,.2,.12,fx+.045,1.32,dc+.48,g);
+  box(M.ebox,.3,.6,.07,dA-.3,1.45,lz0+pt/2+.035,g); box(M.yellow,.05,.05,.005,dA-.32,1.62,lz0+pt/2+.072,g,false);
+  const zl=(lz1+pt/2+iz1)/2;                                                                    // toilet (left): wall-hung WC on a frame at the back wall
+  box(M.inWall,.2,1.1,.62,ix0+.1,.55,zl,g); box(M.ceramic,.01,.15,.24,ix0+.205,.98,zl,g);
+  cyl(M.ceramic,.18,.3,ix0+.43,.28,zl,'y',g,24).scale.x=1.45; cyl(M.ceramic,.19,.03,ix0+.43,.445,zl,'y',g,24).scale.x=1.45;
+  cyl(M.ceramic,.055,.1,ix0+.75,.75,iz1-.07,'x',g,16);                                        // paper roll on the outer wall
+  box(M.ceramic,.4,.1,.3,ix0+1.25,.82,iz1-.15,g); cyl(M.chrome,.01,.12,ix0+1.25,.92,iz1-.05,'y',g);   // small hand basin and mirror
+  box(M.mirror,.35,.45,.01,ix0+1.25,1.32,iz1-.005,g);
+  const ze=(iz0+lz0-pt/2)/2;                                                                    // electrical room: boards on the walls, cable tray
+  box(M.ebox,.55,.8,.14,ix0+.95,1.4,iz0+.07,g); box(M.yellow,.06,.06,.005,ix0+.95,1.62,iz0+.142,g,false);
+  box(M.ebox,.4,.55,.12,ix0+.35,1.45,iz0+.06,g); box(M.yellow,.05,.05,.005,ix0+.35,1.6,iz0+.122,g,false);
+  box(M.ebox,.14,.7,.5,.07,1.35,ze,g); box(M.yellow,.005,.05,.05,.142,1.55,ze,g,false);         // board on the black wall itself
+  box(M.galv,inD-.1,.05,.2,(ix0+ix1)/2,2.25,iz0+.12,g); box(M.galv,.2,.05,rw-.1,.12,2.25,ze,g);
+  for(const x of [ix0+.35,ix0+.95]) bar(M.cable,V(x,1.73,iz0+.07),V(x,2.23,iz0+.07),.04,.04,V(1,0,0),g);
+  const f2=v=>v.toFixed(2).replace('.',','), m2=v=>v.toFixed(1).replace('.',',')+' м²';         // room labels for the roofless view
+  const rl=(name,x,z,d=inD)=>{ const an=new THREE.Object3D(); an.position.set(x,.15,z); g.add(an);
+    const el=document.createElement('div'); el.className='room'; el.innerHTML=`<b>${name}</b><span>${f2(rw)} × ${f2(d)} м · ${m2(rw*d)}</span>`;
+    labelsEl.appendChild(el); dims.push({el,anchor:an,room:true}); };
+  rl('Туалет',ix0+inD*.72,zl); rl('Умывальная',ix0+inD*.6,dc); rl('Электрощитовая',ix0+inD*.64,ze,ix1);
+  cabinLight=new THREE.PointLight(0xfff1dc,1.6,4,2); cabinLight.position.set(ix1-.7,ih-.15,dc); g.add(cabinLight);
+  const ds=dimSet(g), h=Hc+.18;
+  dim(ds,V(x1+.12,h,z0),V(x1+.12,h,z1),fmt(Wc),V(1,0,0));
+  dim(ds,V(x0,h,z1+.12),V(x1,h,z1+.12),fmt(D),V(0,0,1));
+  dim(ds,V(x1+.18,0,z1+.18),V(x1+.18,Hc,z1+.18),fmt(Hc),V(1,0,1).normalize());
+  movable('cabin','Санблок',g,x0+D/2,z0+Wc/2,G);
+  g.visible=P.cabin;
+}
+
+// ---------- office on the gate wall right of the gate: a П of white panels and glass (owner's figures) ----------
+let officeGroup, offRoofGroup, offFrameDims;
+const offBox=()=>{ const a=P.doorX+P.doorW+.38, b=Math.min(a+P.offW,P.W-.44), d=Math.min(P.offD,L()-2); return {a,b,d}; };   // wall 0.14 m short of the post 0.62 m right of the gate
+function buildOffice(){
+  const g=officeGroup=new THREE.Group(); G.add(g);
+  const t=.1, side=.75, fw=.035, dw=1.15, dh=2.1, {a:x0,b:x1,d:z1}=offBox(), gh=2*fw+P.offG, H=Math.max(P.offH,gh+.05);   // 35 + glass 2500 + 35 up to the ceiling, white band and roof above
+  const put=(axis,c,mat,a,b,h,y,th=t,cast=true)=>axis==='z'                                       // piece of a wall along z (at x=c) or along x (at z=c)
+    ? box(mat,th,h,b-a,c+t/2,y,(a+b)/2,g,cast) : box(mat,b-a,h,th,(a+b)/2,y,c+t/2,g,cast);
+  const pane=(axis,c,a,b,y0,y1)=>put(axis,c,M.glass,a,b,y1-y0,(y0+y1)/2,.012,false);
+  function wall(axis,c,segs){                                                                       // aluminium glazing: 35 mm profiles, equal panes
+    return segs.map(([a,b,kind])=>{
+      if(!kind){ put(axis,c,M.cab,a,b,H,H/2); return {a,b}; }
+      put(axis,c,M.cab,a,b,H-gh,(gh+H)/2);                                                          // white band between the glazing and the roof
+      put(axis,c,M.frame,a,b,fw,gh-fw/2,t*.6);                                                      // head
+      if(kind==='door'){                                                                            // door block: jambs, leaf, glass transom over the leaf
+        for(const u of [a,b-fw]) put(axis,c,M.frame,u,u+fw,gh-fw,(gh-fw)/2,t*.6);
+        put(axis,c,M.frame,a+fw,b-fw,fw,dh+fw/2,t*.6); pane(axis,c,a+fw,b-fw,dh+fw,gh-fw);
+        const l0=a+fw, l1=b-fw, st=.04;
+        for(const u of [l0,l1-st]) put(axis,c,M.frame,u,u+st,dh-.01,(dh-.01)/2,.045);
+        put(axis,c,M.frame,l0,l1,.1,.06,.045); put(axis,c,M.frame,l0,l1,st,dh-.01-st/2,.045);
+        pane(axis,c,l0+st,l1-st,.11,dh-.01-st);
+        for(const s of [-1,1]){ const o=s*(t*.3+.03), u=l1-.12; box(M.chrome,.025,.9,.025,axis==='z'?c+t/2+o:u,1.05,axis==='z'?u:c+t/2+o,g); }   // pull handles
+        return {a,b,kind,l0,l1};
+      }
+      put(axis,c,M.frame,a,b,fw,fw/2,t*.6);                                                         // floor track
+      const n=Math.max(1,Math.round((b-a)/1.2)), pw=(b-a-(n+1)*fw)/n;                              // sections about 1.2 m, all panes equal
+      for(let i=0;i<=n;i++){ const u=a+i*(pw+fw); put(axis,c,M.frame,u,u+fw,gh-2*fw,gh/2,t*.6); if(i<n) pane(axis,c,u+fw,u+fw+pw,fw,gh-fw); }
+      return {a,b,kind,n,pw};
+    });
+  }
+  const w1=wall('z',x0,[[0,side],[side,side+dw,'door'],[side+dw,z1-side,'glass'],[z1-side,z1-t]]);   // from the gate wall: 0.75 + door 1.15 + 7.35 glass + 0.75
+  const w2=wall('x',z1-t,[[x0,x0+side],[x0+side,x1-side,'glass'],[x1-side,x1]]);                    // front: 0.75 + 6.0 glass + 0.75
+  wall('z',x1-t,[[0,z1-t]]);                                                                        // back to the gate wall along the long wall, plain
+  const ix0=x0+t, ix1=x1-t, iz1=z1-t;
+  box(M.lam,ix1-ix0,.01,iz1,(ix0+ix1)/2,.005,iz1/2,g,false);
+  const pc=[(ix0+ix1)/2,iz1/2]; box(M.timber,.2,gh,.2,pc[0],gh/2,pc[1],g);                         // 200 × 200 timber post in the middle of the room, floor to ceiling
+  // ceiling framing (owner): 100 × 200 beam on the post from wall to wall, 50 × 120 joists from it to the gate wall and to the front, 400 mm apart
+  const bt=gh+.2, js=.4, kN=Math.floor(((ix1-ix0)/2-.05)/js+1e-6), jx=[];
+  for(let k=-kN;k<=kN;k++) jx.push(pc[0]+k*js);
+  box(M.timber,ix1-ix0,.2,.1,pc[0],gh+.1,pc[1],g);
+  for(const x of jx){ box(M.wood,.05,.12,pc[1]-.05,x,bt-.06,(pc[1]-.05)/2,g); box(M.wood,.05,.12,iz1-pc[1]-.05,x,bt-.06,(pc[1]+.05+iz1)/2,g); }   // tops flush with the beam
+  const rg=offRoofGroup=new THREE.Group(); g.add(rg);
+  box(M.cabCap,x1-x0+.04,.05,z1+.02,(x0+x1)/2,H+.025,(z1+.02)/2,rg);                                // roof slab
+  box(M.inCeil,ix1-ix0,.03,iz1,(ix0+ix1)/2,gh+.015,iz1/2,rg);                                      // ceiling at the top of the glass
+  for(let i=0;i<3;i++) for(let j=0;j<4;j++) box(M.lamp,.6,.01,.6,ix0+(ix1-ix0)*(i+.5)/3,gh-.005,iz1*(j+.5)/4,rg,false);
+  rg.visible=P.offRoof;
+  const lt=new THREE.PointLight(0xfff1dc,1.4,10,2); lt.position.set((ix0+ix1)/2,gh-.3,iz1/2); g.add(lt);
+  const ds=dimSet(g), post=P.doorX+P.doorW+.62, f2=v=>v.toFixed(2).replace('.',','), mm=v=>Math.round(v*1000);
+  const chain=(pts,names,at,tick)=>{ for(let i=0;i+1<pts.length;i++) dim(ds,at(pts[i]),at(pts[i+1]),fmt(pts[i+1]-pts[i])+names[i],tick); };
+  dim(ds,V(x0-.3,.03,0),V(x0-.3,.03,z1),fmt(z1),V(1,0,0));
+  chain([0,side,side+dw,z1-side,z1],['',' · дверь',' · стекло',''],u=>V(x0-.12,gh+.2,u),V(1,0,0));
+  dim(ds,V(x0,.03,z1+.3),V(x1,.03,z1+.3),fmt(x1-x0),V(0,0,1));
+  chain([x0,x0+side,x1-side,x1],['',' · стекло',''],u=>V(u,gh+.2,z1+.12),V(0,0,1));
+  dim(ds,V(x0-.3,0,z1+.3),V(x0-.3,H,z1+.3),fmt(H),V(1,0,1).normalize());
+  dim(ds,V(x0-.12,0,z1-side),V(x0-.12,gh,z1-side),fmt(gh)+' · до потолка',V(0,0,1));
+  dim(ds,V(x0-.05,gh,side/2),V(x0-.05,H,side/2),fmt(H-gh)+' · до крыши',V(0,0,1));
+  // one pane, one profile and the door leaf measured on the wall itself
+  const glassDims=(sg,at,tick,up)=>{ const u0=sg.a+fw+2*(sg.pw+fw), u1=u0+sg.pw, u3=u1+fw+sg.pw/2;
+    dim(ds,at(u0,1.6),at(u1,1.6),sg.pw.toFixed(3).replace('.',',')+' м · стекло',tick);
+    dim(ds,at(u1,.75),at(u1+fw,.75),mm(fw)+' мм · рама',tick);
+    dim(ds,at(u3,fw),at(u3,gh-fw),fmt(gh-2*fw)+' · стекло',up); };
+  glassDims(w1[2],(u,y)=>V(x0-.04,y,u),V(1,0,0),V(0,0,1));
+  glassDims(w2[1],(u,y)=>V(u,y,z1+.04),V(0,0,1),V(1,0,0));
+  const dr=w1[1];
+  dim(ds,V(x0-.04,1.35,dr.l0),V(x0-.04,1.35,dr.l1),fmt(dr.l1-dr.l0)+' · полотно',V(1,0,0));
+  dim(ds,V(x0-.04,0,dr.l0+.25),V(x0-.04,dh,dr.l0+.25),fmt(dh)+' · дверь',V(0,0,1));
+  storeLabel(ds,'Дверной блок',`${mm(dw)} мм, полотно ${mm(dr.l1-dr.l0)} × ${mm(dh)}, сверху стекло`,x0-.15,H+.8,side+dw/2,()=>true);
+  for(const [sg,x,z] of [[w1[2],x0-.15,(w1[2].a+w1[2].b)/2],[w2[1],(w2[1].a+w2[1].b)/2,z1+.15]])
+    storeLabel(ds,'Стекло',`${sg.n} секций по ${mm(sg.pw)} × ${mm(gh-2*fw)} мм, рама ${mm(fw)} мм`,x,H+.3,z,()=>true);
+  dim(ds,V(P.doorX+P.doorW,H+.35,.3),V(post,H+.35,.3),fmt(.62)+' · до стойки',V(0,1,0));
+  dim(ds,V(ix0,H+.75,.3),V(post,H+.75,.3),fmt(post-ix0),V(0,1,0));
+  storeLabel(ds,'Офис',`${f2(x1-x0)} × ${f2(z1)} м · ${((x1-x0)*z1).toFixed(1).replace('.',',')} м²`,(x0+x1)/2,H+.4,z1/2,()=>true);
+  storeLabel(ds,'Столб 200 × 200',`дерево, до потолка ${f2(gh)} м · по центру: ${f2((ix1-ix0)/2)} м от стен, ${f2(iz1/2)} м от торца`,pc[0],1.2,pc[1]+.7,()=>true);
+  const fgd=offFrameDims=new THREE.Group(); g.add(fgd); fgd.visible=!P.offRoof; const fds=dimSet(fgd);   // framing sizes show when the roof is off
+  dim(fds,V(ix0,bt+.25,pc[1]+.3),V(ix1,bt+.25,pc[1]+.3),fmt(ix1-ix0)+' · брус 100 × 200',V(0,0,1));
+  dim(fds,V(pc[0]+js/2,bt+.15,0),V(pc[0]+js/2,bt+.15,pc[1]-.05),fmt(pc[1]-.05)+' · балки 50 × 120',V(1,0,0));
+  dim(fds,V(pc[0]+js/2,bt+.15,pc[1]+.05),V(pc[0]+js/2,bt+.15,iz1),fmt(iz1-pc[1]-.05)+' · балки 50 × 120',V(1,0,0));
+  dim(fds,V(pc[0]+js,bt+.15,pc[1]/2),V(pc[0]+2*js,bt+.15,pc[1]/2),fmt(js)+' · шаг',V(0,0,1));
+  storeLabel(fds,'Перекрытие',`брус 100 × 200 на столбе; балки 50 × 120 с шагом ${mm(js)} мм, ${2*jx.length} шт.`,pc[0],bt+.5,pc[1]*.45,()=>true);
+  g.visible=P.office;
+}
+
+// ---------- tyre-service zone: bay 2, left of the WC unit, placed from photo 4 at real-world size ----------
+const DECAL={};
+function decalMat(key,w,h,draw){
+  if(DECAL[key]) return DECAL[key];
+  const c=document.createElement('canvas'); c.width=w; c.height=h; draw(c.getContext('2d'),w,h);
+  const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=aniso;
+  return DECAL[key]=new THREE.MeshStandardMaterial({map:t,transparent:true,roughness:.45});
+}
+function decal(mat,w,h,parent,x,y,z,ry=Math.PI/2){ const m=new THREE.Mesh(keep(new THREE.PlaneGeometry(w,h)),mat); m.position.set(x,y,z); m.rotation.y=ry; parent.add(m); return m; }
+const LOGO=()=>decalMat('logo',512,180,(g,w)=>{ g.font='italic 900 92px Arial, sans-serif'; g.fillStyle='#fff'; g.fillText('NORTEC',8,88);
+  g.font='italic 900 72px Arial, sans-serif'; g.fillStyle='#e8322c'; g.textAlign='right'; g.fillText('PRO»',w-14,166); });
+const TEXT=(key,txt,color,vertical)=>decalMat(key,vertical?128:512,vertical?512:128,(g,w,h)=>{ g.fillStyle=color; g.font='italic 800 92px Arial, sans-serif';
+  g.textAlign='center'; g.textBaseline='middle'; if(vertical){ g.translate(w/2,h/2); g.rotate(Math.PI/2); g.fillText(txt,0,0);} else g.fillText(txt,w/2,h/2); });
+const DISPLAY=()=>decalMat('display',512,256,(g,w,h)=>{ g.fillStyle='#1d2024'; g.fillRect(0,0,w,h); g.fillStyle='#e9ecef'; g.fillRect(206,40,100,150);
+  g.fillStyle='#1d2024'; g.fillRect(226,60,60,110); g.font='bold 64px "Courier New", monospace'; g.fillStyle='#ff3b30'; g.fillText('888',26,110); g.fillText('888',336,110);
+  g.fillStyle='#2ecc71'; for(let i=0;i<6;i++) g.fillRect(40+i*72,200,48,26); });
+let TIREG=null;
+function tireGeo(){
+  if(TIREG) return TIREG;   // 205/55 R16: Ø 632 mm, width 205 mm, bead Ø 406 mm
+  const p=[[.203,-.09],[.22,-.1],[.26,-.104],[.295,-.1],[.311,-.088],[.316,-.07],[.316,.07],[.311,.088],[.295,.1],[.26,.104],[.22,.1],[.203,.09],[.203,-.09]];
+  return TIREG=new THREE.LatheGeometry(p.map(([r,y])=>new THREE.Vector2(r,y)),40);
+}
+function buildChanger(parent){
+  // envelope of the class (Balticdiag BD-810 + BD310 arm): 1.2 deep × 0.8 wide (1.25 with the arm), table 0.9, shaft top 1.9
+  const g=new THREE.Group(); g.position.set(1.0,0,6.5); parent.add(g);            // front faces the hall (+x)
+  const B=M.blue, K=M.blackSteel, S=M.alu;
+  box(B,.85,.78,.8,0,.41,0,g); box(B,.95,.025,.86,0,.0125,0,g);
+  box(K,.04,.36,.42,.445,.48,-.17,g); decal(LOGO(),.34,.12,g,.467,.5,-.17);
+  box(K,.16,.1,.56,.5,.06,0,g); for(let i=0;i<4;i++) box(S,.13,.028,.085,.56,.09,-.2+i*.135,g);
+  cyl(M.table,.36,.045,0,.83,0,'y',g,40); cyl(K,.06,.07,0,.86,0,'y',g,16);          // turntable, top ≈ 0.9 m
+  for(let k=0;k<4;k++){ const a=Math.PI/4+k*Math.PI/2, c=Math.cos(a), s=Math.sin(a);
+    const jaw=box(K,.2,.02,.06,c*.2,.86,s*.2,g); jaw.rotation.y=-a; const j2=box(S,.08,.07,.07,c*.29,.89,s*.29,g); j2.rotation.y=-a; }
+  box(B,.2,1.0,.22,-.45,1.22,0,g); decal(TEXT('mo320','MO320','#0d0e10',true),.1,.42,g,-.348,1.3,0);   // tilting column
+  box(K,.5,.14,.16,-.17,1.72,0,g); box(K,.16,.28,.2,.05,1.55,0,g);
+  cyl(S,.028,.86,.05,1.41,0,'y',g,6); cyl(K,.04,.16,.05,1.8,0,'y',g,14); cyl(S,.03,.04,.05,1.88,0,'y',g,14);
+  box(K,.12,.07,.09,.07,.97,0,g); box(S,.06,.03,.05,.12,.94,0,g);
+  cyl(S,.045,.65,-.54,1.1,.08,'y',g,16);
+  box(K,.24,.8,.035,-.42,1.15,.43,g); for(let i=0;i<3;i++) box(M.tray,.18,.04,.04,-.4,.9+i*.16,.45,g);    // tool holder (left)
+  cyl(M.ceramic,.045,.03,-.29,1.47,.46,'x',g,24); cyl(K,.05,.02,-.305,1.47,.46,'x',g,24);
+  const hose=mesh(keep(new THREE.TorusGeometry(.1,.008,6,28)),K,g); hose.position.set(-.33,1.0,.47);
+  box(K,.12,1.15,.12,-.36,1.2,-.73,g); box(B,.25,.15,.3,-.36,.7,-.55,g); cyl(S,.035,.5,-.27,1.3,-.73,'y',g,14);   // helper arm (right)
+  bar(K,V(-.36,1.58,-.73),V(.18,1.58,-.73),.07,.07,V(0,1,0),g); bar(K,V(.18,1.58,-.73),V(.18,1.58,-.3),.07,.07,V(0,1,0),g);
+  cyl(K,.035,.34,.18,1.4,-.3,'y',g,12); cyl(K,.07,.06,.18,1.2,-.3,'y',g,20);
+  bar(K,V(-.36,1.25,-.73),V(.28,1.25,-.45),.06,.06,V(0,1,0),g); cyl(K,.08,.03,.28,1.03,-.45,'y',g,20); cyl(S,.02,.2,.28,1.13,-.45,'y',g,8);
+  box(K,.3,.35,.03,0,.42,-.415,g); bar(K,V(-.4,.55,-.56),V(.2,.47,-.56),.07,.06,V(0,1,0),g);   // bead breaker
+  const blade=box(S,.04,.24,.2,.22,.34,-.54,g); blade.rotation.z=.25;
+  bar(S,V(.28,.65,-.56),V(.32,1.02,-.56),.02,.02,V(1,0,0),g); cyl(M.red,.018,.06,.32,1.04,-.56,'y',g,10);
+  const ds=dimSet(g);
+  dim(ds,V(-.58,.03,.62),V(.62,.03,.62),'1,20 м',V(0,0,1),true);
+  dim(ds,V(.78,.03,-.79),V(.78,.03,.46),'1,25 м с лапой',V(1,0,0),true);
+  dim(ds,V(.78,0,.62),V(.78,1.9,.62),'1,90 м',V(1,0,0),true);
+  movable('mo320','Шиномонтаж NORTEC MO320',g,1.0,6.5,parent);
+}
+function buildBalancer(parent){
+  const g=new THREE.Group(); g.position.set(.8,0,9.0); parent.add(g);           // shaft and hood on the right (−z)
+  const B=M.blue, K=M.blackSteel, S=M.alu;
+  box(B,.46,.86,.5,0,.43,0,g); box(K,.52,.07,.58,.01,.895,0,g);
+  for(let i=0;i<3;i++) for(let j=0;j<2;j++) box(M.tray,.13,.02,.14,.12-j*.17,.932,-.17+i*.17,g);
+  cyl(K,.05,.05,.1,.955,.2,'y',g,16); cyl(K,.04,.05,-.02,.955,.22,'y',g,16);
+  const cg=new THREE.Group(); cg.position.set(-.21,.93,0); cg.rotation.z=.35; g.add(cg);       // console top ≈ 1.13 m
+  box(K,.1,.22,.46,0,.11,0,cg); decal(DISPLAY(),.4,.18,cg,.052,.11,0);
+  decal(LOGO(),.3,.105,g,.232,.6,-.02); decal(TEXT('wb220','WB220','#fff',false),.16,.045,g,.232,.5,-.05);
+  cyl(K,.065,.1,.02,.72,-.3,'z',g,20); cyl(S,.018,.48,.02,.72,-.53,'z',g,12);          // shaft: total width ≈ 1.0 m
+  cyl(S,.08,.03,.02,.72,-.37,'z',g,28); cyl(K,.06,.035,.02,.72,-.395,'z',g,24); cyl(K,.045,.06,.02,.72,-.71,'z',g,16);
+  bar(K,V(-.07,.72,-.71),V(.11,.72,-.71),.02,.02,V(0,1,0),g); cyl(M.red,.015,.04,-.08,.72,-.71,'x',g,8); cyl(M.red,.015,.04,.12,.72,-.71,'x',g,8);
+  const hg=keep(new THREE.CylinderGeometry(.47,.47,.46,28,1,true,Math.PI-.35,2.52));   // wheel guard, raised: top ≈ 1.55 m, depth ≈ 0.9 m
+  const hood=mesh(hg,M.hood,g); hood.rotation.x=Math.PI/2; hood.position.set(-.1,1.08,-.52);
+  bar(K,V(-.2,.8,-.26),V(-.46,.86,-.3),.04,.04,V(0,1,0),g); bar(K,V(.06,1.53,-.75),V(.06,1.53,-.29),.025,.025,V(0,1,0),g);
+  box(B,.36,.06,.3,.06,.03,-.4,g); box(K,.14,.025,.12,.12,.072,-.4,g);
+  const ds=dimSet(g);
+  dim(ds,V(.4,.03,-.75),V(.4,.03,.25),'1,00 м',V(1,0,0),true);
+  dim(ds,V(-.57,.03,.4),V(.24,.03,.4),'0,90 м',V(0,0,1),true);
+  dim(ds,V(.4,0,.4),V(.4,1.55,.4),'1,55 м',V(1,0,0),true);
+  movable('wb220','Балансировка NORTEC WB220L',g,.8,9.0,parent);
+}
+function wheel(parent,x,y,z){
+  const g=new THREE.Group(); g.position.set(x,y,z); parent.add(g);
+  const t=mesh(tireGeo(),M.rubber,g); t.rotation.z=Math.PI/2;
+  const rim=mesh(keep(new THREE.CylinderGeometry(.2,.2,.17,32,1,true)),M.alu,g); rim.rotation.z=Math.PI/2;
+  cyl(M.alu,.19,.012,.07,0,0,'x',g,32); cyl(M.tray,.17,.013,.072,0,0,'x',g,32); cyl(M.alu,.05,.04,.08,0,0,'x',g,16);
+  for(let k=0;k<10;k++){ const a=k*Math.PI/5+(k%2?.13:0); const s=box(M.alu,.02,.15,.025,.078,Math.sin(a)*.1,Math.cos(a)*.1,g); s.rotation.x=Math.PI/2-a; }
+}
+function buildTrolley(parent){
+  const g=new THREE.Group(); g.position.set(5.09,0,8.2); g.rotation.y=.11; parent.add(g);   // long side points to the wall
+  const K=M.blackSteel, L2=.725, W2=.275, s=.025;
+  for(const x of [-L2,L2]) for(const z of [-W2,W2]){ box(K,s,1.56,s,x,.9,z,g); box(K,.05,.05,.05,x,.1,z,g); cyl(M.rubber,.045,.03,x,.05,z,'z',g,14); }
+  for(const y of [.15,.98,1.66]){ box(K,2*L2,s,s,0,y,-W2,g); box(K,2*L2,s,s,0,y,W2,g); box(K,s,s,2*W2,-L2,y,0,g); box(K,s,s,2*W2,L2,y,0,g); }
+  for(const y of [.15,.98]) for(const z of [-.12,.12]) box(K,2*L2,.02,.02,0,y,z,g);
+  for(let i=0;i<6;i++){ const x=-.58+i*.232;
+    const top=mesh(tireGeo(),M.rubber,g); top.rotation.z=Math.PI/2; top.position.set(x,1.31,0);
+    if(i===0) wheel(g,x,.48,0); else { const low=mesh(tireGeo(),M.rubber,g); low.rotation.z=Math.PI/2; low.position.set(x,.48,0); }
+  }
+  movable('cart','Тележка с шинами',g,5.09,8.2,parent);
+}
+let tireGroup;
+function buildTireZone(){
+  tireGroup=new THREE.Group(); G.add(tireGroup);
+  buildChanger(tireGroup); buildBalancer(tireGroup); buildTrolley(tireGroup);
+  const bk=new THREE.Group();                                                                          // bead paste bucket
+  cyl(M.blackSteel,.13,.22,.75,.11,5.45,'y',bk,20); cyl(M.ceramic,.12,.01,.75,.225,5.45,'y',bk,20);
+  bar(M.yellow,V(.75,.23,5.45),V(.83,.42,5.5),.03,.03,V(0,1,0),bk);
+  movable('paste','Ведро с монтажной пастой',bk,.75,5.45,tireGroup);
+  tireGroup.visible=P.tires;
+}
+
+// ---------- two-storey storeroom in the far corner at the black wall (seen from the gate: far right) ----------
+// owner's figures: penultimate column on the black wall (corner column not counted, z = 30); cross wall from the
+// column face to 6.32 m off the black wall (5.89 m from the column); long wall 9.83 m to the far end wall; 1.5 m door.
+// Ground floor: parts racking, three waste drums, two 1000 l IBCs. Upper floor: staff kitchen, dining table, sofa, changing room.
+let storeGroup, stUpper, stCeil, stFrameDims, SEED=7;
+const srnd=()=>(SEED=SEED*16807%2147483647)/2147483647;                                       // repeatable stock layout
+const plate=(txt)=>decalMat('lbl-'+txt,512,128,(g,w,h)=>{ g.fillStyle='#f7f7f5'; g.fillRect(0,0,w,h); g.strokeStyle='#111'; g.lineWidth=8; g.strokeRect(4,4,w-8,h-8);
+  g.fillStyle='#111'; g.font='bold 66px Arial, sans-serif'; g.textAlign='center'; g.textBaseline='middle'; g.fillText(txt,w/2,h/2+3); });
+function storeLabel(par,name,info,x,y,z,vis){ const an=new THREE.Object3D(); an.position.set(x,y,z); par.add(an);
+  const el=document.createElement('div'); el.className='room'; el.innerHTML=`<b>${name}</b>${info?`<span>${info}</span>`:''}`; labelsEl.appendChild(el); dims.push({el,anchor:an,vis}); }
+function rack(par,xa,xb,za,zb,h){                                                             // pallet-style shelving with boxes, bins, brake discs
+  const alongZ=zb-za>xb-xa, len=alongZ?zb-za:xb-xa, dep=alongZ?xb-xa:zb-za, cx=(xa+xb)/2, cz=(za+zb)/2;
+  const at=(s,d)=>alongZ?[xa+d,za+s]:[xa+s,za+d], n=Math.ceil(len/1.0);
+  for(let i=0;i<=n;i++) for(const d of [.025,dep-.025]){ const [x,z]=at(i*len/n,d); box(M.rackPost,.05,h,.05,x,h/2,z,par); }
+  for(const y of [.12,.6,1.08,1.56,2.04].filter(y=>y<h-.08)){
+    box(M.galv,alongZ?dep:len,.02,alongZ?len:dep,cx,y,cz,par);
+    for(const d of [.02,dep-.02]){ const [x,z]=at(len/2,d); box(M.rackBeam,alongZ?.04:len,.07,alongZ?len:.04,x,y-.045,z,par); }
+    for(let s=.06;;){
+      const w=.24+srnd()*.3; if(s+w>len-.04) break;
+      if(srnd()>.12){ const r=srnd(), hh=.12+srnd()*.26, dd=Math.min(dep-.08,.32+srnd()*.15), [x,z]=at(s+w/2,dep/2);
+        const mat=r<.45?M.card:r<.62?M.binBlue:r<.74?M.binRed:r<.86?M.binGray:null;
+        if(mat) box(mat,alongZ?dd:w,hh,alongZ?w:dd,x,y+.01+hh/2,z,par);
+        else for(let k=0;k<3;k++) cyl(M.galv,Math.min(.14,w/2-.01),.03,x,y+.025+k*.035,z,'y',par,20); }
+      s+=w+.03+srnd()*.07;
+    }
+  }
+}
+function drum(par,x,z,mat,txt){                                                                // 200 l drum, label facing the room
+  cyl(mat,.29,.88,x,.44,z,'y',par,28); for(const y of [.3,.6]) cyl(mat,.297,.025,x,y,z,'y',par,28);
+  cyl(M.blackSteel,.27,.01,x,.885,z,'y',par,28); decal(plate(txt),.36,.09,par,x-.3,.66,z,-Math.PI/2);
+}
+function ibc(par,x,z,txt){                                                                     // 1000 l IBC: 1.2 × 1.0 × 1.16 m, tank in a steel cage on a pallet
+  box(M.blackSteel,1.2,.15,1.0,x,.075,z,par); box(M.ibc,1.12,.94,.92,x,.64,z,par);
+  cyl(M.blackSteel,.075,.05,x,1.13,z,'y',par,18); cyl(M.blackSteel,.05,.1,x-.6,.25,z,'x',par,14);
+  for(const sx of [-.58,.58]) for(let k=0;k<=4;k++) box(M.galv,.02,1.0,.02,x+sx,.65,z-.48+k*.24,par);
+  for(const sz of [-.48,.48]) for(let k=1;k<4;k++) box(M.galv,.02,1.0,.02,x-.58+k*.29,.65,z+sz,par);
+  for(const y of [.4,.75,1.12]){ for(const sz of [-.48,.48]) box(M.galv,1.18,.02,.02,x,y,z+sz,par); for(const sx of [-.58,.58]) box(M.galv,.02,.02,.98,x+sx,y,z,par); }
+  decal(plate(txt),.5,.125,par,x-.6,.82,z,-Math.PI/2);
+}
+function chair(par,x,y,z,dir){ box(M.plastic,.42,.04,.42,x,y+.46,z,par); box(M.plastic,.42,.42,.03,x,y+.69,z-dir*.2,par);
+  for(const [a,b] of [[-.18,-.18],[.18,-.18],[-.18,.18],[.18,.18]]) box(M.galv,.025,.45,.025,x+a,y+.225,z+b,par); }
+function buildStore(){
+  SEED=7;
+  const g=storeGroup=new THREE.Group(); G.add(g);
+  const lo=new THREE.Group(), up=stUpper=new THREE.Group(), ce=stCeil=new THREE.Group(); g.add(lo,up,ce);
+  const Lh=L(), zc=(P.bays-2)*P.bay, colF=.43, t=.1, xo=Math.min(P.stW,P.W-1.5), xi=xo-t;
+  const sl=.12, fl=P.stG+sl, hs=Math.max(P.stH,fl+2.2), dh=2.1, uh=2.0, zs=zc-t/2, za=zc+t/2, zb=Lh;   // ground floor 2.60 m clear, 12 cm floor
+  const dw=Math.min(P.stDoor,zb-za-2), dm=(za+zb)/2, d1=zb-1.0, d0=d1-dw, dc=(d0+d1)/2;            // ground door in the long wall, 1 m from the far end wall (owner)
+  const u0=dm-.45, u1=dm+.45;                                                                       // upper door in the long wall, mid-wall at the stair landing
+  // white panel walls like the WC unit; split at the upper floor so each floor can be shown on its own
+  const wl=(par,sx,sy,sz,x,y,z)=>box(M.cab,sx,sy,sz,x,y,z,par);
+  for(const [par,y0,y1,o0,o1,oh] of [[lo,0,fl,d0,d1,dh],[up,fl,hs,u0,u1,fl+uh]]){
+    wl(par,xo-colF,y1-y0,t,(colF+xo)/2,(y0+y1)/2,zc);
+    wl(par,t,y1-y0,o0-zs,xo-t/2,(y0+y1)/2,(zs+o0)/2); wl(par,t,y1-y0,zb-o1,xo-t/2,(y0+y1)/2,(o1+zb)/2); wl(par,t,y1-oh,o1-o0,xo-t/2,(oh+y1)/2,(o0+o1)/2);
+    for(let x=colF+1.15;x<xo-.15;x+=1.15) box(M.cabJoint,.008,y1-y0-.12,.004,x,(y0+y1)/2,zs-.002,par);
+    for(let z=zs+1.15;z<zb-.15;z+=1.15) if(z<o0-.05||z>o1+.05) box(M.cabJoint,.004,y1-y0-.12,.008,xo+.002,(y0+y1)/2,z,par);
+  }
+  box(M.skirt,xo-colF,.1,.012,(colF+xo)/2,.05,zs-.006,lo); box(M.skirt,.012,.1,d0-zs,xo+.006,.05,(zs+d0)/2,lo); box(M.skirt,.012,.1,zb-d1,xo+.006,.05,(d1+zb)/2,lo);
+  for(const [z,sg] of [[d0,1],[d1,-1]]){ box(M.door,.045,dh-.01,dw/2-.01,xo-t/2,(dh-.01)/2,z+sg*dw/4,lo); box(M.chrome,.05,.025,.12,xo+.03,1.05,dc-sg*.09,lo); }
+  box(M.door2,.045,uh-.01,u1-u0-.02,xo-t/2,fl+(uh-.01)/2,dm,up); box(M.chrome,.05,.025,.12,xo+.03,fl+1.0,u1-.12,up);
+  box([M.cab,M.cab,M.lam,M.inCeil,M.cab,M.cab],xi,.01,zb-za,xi/2,fl+.005,(za+zb)/2,up);          // upper floor deck on the joists
+  box(M.inCeil,xi,.05,zb-za,xi/2,hs+.025,(za+zb)/2,ce);                                          // ceiling of the upper room
+  // wooden stair outside along the long wall: rises away from the gate to a landing at the upper door (owner)
+  const n=Math.max(8,Math.round(fl/.19)), rise=fl/n, go=.26, zt=u0-.3, z0=zt-(n-1)*go, sx0=xo, sx1=xo+1.0, xr=sx1-.03, lz=u1+.3;
+  for(let i=1;i<n;i++) box(M.wood,.96,.04,go-.01,(sx0+sx1)/2,i*rise-.02,z0+(i-.5)*go,g);
+  box(M.wood,1.0,.06,lz-zt,(sx0+sx1)/2,fl-.03,(zt+lz)/2,g);
+  for(const x of [sx0+.03,sx1-.03]) bar(M.timber,V(x,-.02,z0-.08),V(x,fl-.06,zt),.22,.05,V(0,1,0),g);
+  for(const z of [zt+.05,lz-.05]) bar(M.timber,V(xr,0,z),V(xr,fl-.06,z),.08,.08,V(1,0,0),g);
+  bar(M.timber,V(xr,.95,z0),V(xr,fl+.95,zt),.04,.04,V(0,1,0),g);
+  for(let i=0;i<=3;i++){ const z=z0+i*(zt-z0)/3, yy=(z-z0)/go*rise; bar(M.timber,V(xr,yy,z),V(xr,yy+.95,z),.035,.035,V(1,0,0),g); }
+  for(const yy of [fl+.5,fl+1.0]){ bar(M.timber,V(xr,yy,zt),V(xr,yy,lz),.04,.04,V(0,1,0),g); bar(M.timber,V(sx0,yy,lz),V(xr,yy,lz),.04,.04,V(0,1,0),g); }
+  for(const [x,z] of [[xr,zt],[xr,lz],[sx0+.03,lz]]) bar(M.timber,V(x,fl,z),V(x,fl+1.0,z),.04,.04,V(1,0,0),g);
+  // ground floor: parts racking, waste drums, IBCs for used oil and sludge
+  rack(lo,.5,1.1,zc+.3,zc+P.bay-.25,2.2); rack(lo,.5,1.1,zc+P.bay+.25,zb-.7,2.2);
+  rack(lo,1.5,Math.min(4.3,xi-1.4),zb-.68,zb-.08,2.2); rack(lo,2.2,2.8,zc+1.2,zb-1.9,2.2);          // middle rack clear of the centre post
+  // ground-floor ceiling framing (owner): 200 × 200 post in the middle, 100 × 200 beam across from the column to the long wall,
+  // 50 × 120 joists 400 mm apart from the cross wall to the beam and on to the far end wall, filling the 120 mm floor zone
+  const jt=fl, bx0=colF, pcx=xi/2, jx=[]; for(let x=colF+.045;x<=xi-.025+1e-6;x+=.4) jx.push(x);
+  box(M.timber,.2,jt-.2,.2,pcx,(jt-.2)/2,dm,lo);
+  box(M.timber,xi-bx0,.2,.1,(bx0+xi)/2,jt-.1,dm,lo);
+  for(const x of jx){ box(M.wood,.05,sl,dm-.05-za,x,jt-sl/2,(za+dm-.05)/2,lo); box(M.wood,.05,sl,zb-dm-.05,x,jt-sl/2,(dm+.05+zb)/2,lo); }
+  [['ВЕТОШЬ',M.drumRed],['АЭРОЗОЛИ',M.drumYellow],['МУСОР',M.drumBlue]].forEach(([txt,m],i)=>drum(lo,xi-.32,za+.6+i*.66,m,txt));
+  ibc(lo,xi-.62,d0-.65,'МАСЛО'); ibc(lo,xi-.62,d0-1.8,'ГРЯЗЬ');                                  // along the long wall between the beam and the door
+  // upper floor, one open room: entrance at the black-wall end of the cross wall, kitchen run next to it,
+  // dining table, sofa against the black wall, changing corner (lockers, bench) at the far end
+  const y=fl, kz=za+.31;
+  box(M.cabCap,3.0,.86,.6,3.4,y+.43,kz,up); box(M.wood,3.04,.035,.62,3.4,y+.877,kz+.01,up); box(M.cabCap,3.0,.7,.34,3.4,y+1.85,za+.17,up);
+  box(M.chrome,.5,.012,.38,2.45,y+.897,kz,up); cyl(M.chrome,.012,.22,2.45,y+1.0,za+.08,'y',up);
+  box(M.plastic,.26,.38,.34,3.55,y+1.085,kz-.05,up); cyl(M.ceramic,.04,.08,3.55,y+.94,kz+.1,'y',up);       // coffee machine
+  box(M.plastic,.48,.28,.36,4.45,y+1.035,kz-.05,up); box(M.mirror,.3,.18,.005,4.4,y+1.035,kz+.135,up);      // microwave
+  box(M.fridge,.6,1.8,.6,5.3,y+.9,kz,up);
+  box(M.ceramic,.32,.95,.32,xi-.25,y+.475,za+1.1,up); cyl(M.bottle,.13,.42,xi-.25,y+1.16,za+1.1,'y',up,20);  // water cooler
+  box(M.wood,1.6,.04,.8,3.2,y+.74,zc+2.9,up); for(const [a,b] of [[-.74,-.34],[.74,-.34],[-.74,.34],[.74,.34]]) box(M.galv,.04,.72,.04,3.2+a,y+.36,zc+2.9+b,up);
+  for(const x of [2.65,3.2,3.75]){ chair(up,x,y,zc+2.3,1); chair(up,x,y,zc+3.5,-1); }
+  const s0=zc+P.bay+.3, s1=s0+2.0, sm=(s0+s1)/2;                                               // sofa against the black wall
+  box(M.sofa,.85,.42,s1-s0,.62,y+.21,sm,up); box(M.sofa,.2,.45,s1-s0,.3,y+.64,sm,up);
+  for(const z of [s0+.08,s1-.08]) box(M.sofa,.85,.6,.16,.62,y+.3,z,up);
+  for(const z of [s0+(s1-s0)*.27,s0+(s1-s0)*.73]) box(M.sofa2,.6,.1,(s1-s0)/2-.22,.72,y+.47,z,up);
+  box(M.wood,.5,.04,1.0,1.55,y+.42,sm,up); for(const [a,b] of [[-.2,-.45],[.2,-.45],[-.2,.45],[.2,.45]]) box(M.galv,.03,.4,.03,1.55+a,y+.2,sm+b,up);
+  const nL=Math.floor((Math.min(4.6,xi-.6)-.6)/.4);                                             // changing room: lockers, bench, mirror, hooks
+  for(let i=0;i<nL;i++){ const x=.8+i*.4; box(M.locker,.39,1.8,.48,x,y+.9,zb-.27,up);
+    for(const yy of [.5,1.35]) box(M.lockerDoor,.33,.78,.01,x,y+yy,zb-.515,up); box(M.chrome,.02,.08,.02,x+.12,y+1.0,zb-.53,up); }
+  box(M.wood,Math.max(1,nL*.4-.4),.04,.35,.6+nL*.2,y+.45,zb-1.25,up);
+  for(const a of [-1,1]) box(M.galv,.04,.43,.3,.6+nL*.2+a*(nL*.2-.3),y+.215,zb-1.25,up);
+  box(M.mirror,.01,1.0,.6,xi-.006,y+1.4,zb-1.9,up); box(M.chrome,.03,.03,1.2,xi-.05,y+1.7,zb-.95,up);          // mirror and coat rail on the long wall
+  // dimensions and room tags
+  const ds=dimSet(g);
+  dim(ds,V(colF,.03,zc-1.45),V(xo,.03,zc-1.45),fmt(xo-colF)+' · от колонны',V(0,0,1));
+  dim(ds,V(0,.03,zc-1.9),V(xo,.03,zc-1.9),fmt(xo)+' · от стены',V(0,0,1));
+  dim(ds,V(xo+1.6,.03,za),V(xo+1.6,.03,zb),fmt(zb-za),V(1,0,0));                               // outside the stair
+  dim(ds,V(xo+1.25,dh+.3,d0),V(xo+1.25,dh+.3,d1),fmt(dw)+' · дверь',V(1,0,0));
+  dim(ds,V(xo+1.25,dh+.3,d1),V(xo+1.25,dh+.3,zb),fmt(zb-d1)+' · до торца',V(1,0,0));
+  dim(ds,V(xo+1.25,.03,z0),V(xo+1.25,.03,zt),fmt(zt-z0)+' · марш',V(1,0,0));
+  dim(ds,V(xo+1.25,fl+.15,zt),V(xo+1.25,fl+.15,lz),fmt(lz-zt)+' · площадка',V(1,0,0));
+  dim(ds,V(xo+.35,0,zb-.5),V(xo+.35,P.stG,zb-.5),fmt(P.stG)+' · 1 этаж',V(1,0,0));
+  dim(ds,V(xo+.35,fl,zb-.5),V(xo+.35,hs,zb-.5),fmt(hs-fl)+' · 2 этаж',V(1,0,0));
+  const area=(xo*(zb-za)).toFixed(1).replace('.',',')+' м²';
+  storeLabel(ds,'Склад',`${fmt(xo).replace(' м','')} × ${fmt(zb-za)} · 2 этажа по ${area}`,xo/2,hs+.3,(za+zb)/2,()=>P.storeCut===0);
+  storeLabel(lo,'Склад запчастей','1 этаж · стеллажи, бочки, еврокубы',4.2,.3,zc+4.3,()=>P.storeCut===2);
+  const fgd=stFrameDims=new THREE.Group(); lo.add(fgd); const fds=dimSet(fgd);                      // framing sizes show in the ground-floor view
+  dim(fds,V(bx0,jt+.25,dm+.3),V(xi,jt+.25,dm+.3),fmt(xi-bx0)+' · брус 100 × 200',V(0,0,1));
+  dim(fds,V(jx[7]+.2,jt+.15,za),V(jx[7]+.2,jt+.15,dm-.05),fmt(dm-.05-za)+' · балки 50 × 120',V(1,0,0));
+  dim(fds,V(jx[7]+.2,jt+.15,dm+.05),V(jx[7]+.2,jt+.15,zb),fmt(zb-dm-.05)+' · балки 50 × 120',V(1,0,0));
+  dim(fds,V(jx[2],jt+.15,(za+dm)/2),V(jx[3],jt+.15,(za+dm)/2),fmt(.4)+' · шаг',V(0,0,1));
+  storeLabel(fds,'Перекрытие 1 этажа',`столб 200 × 200 по центру, брус 100 × 200, балки 50 × 120 через 400 мм, ${2*jx.length} шт.`,pcx,jt+.6,(za+dm)/2,()=>true);
+  storeLabel(up,'Кухня и отдых','2 этаж',3.6,y+.3,zc+4.4,()=>P.storeCut===1);
+  storeLabel(up,'Раздевалка','',2.6,y+.3,zb-1.0,()=>P.storeCut===1);
+  g.visible=P.store; stCeil.visible=P.storeCut<1; stUpper.visible=P.storeCut<2; stFrameDims.visible=P.storeCut===2;
+}
+
+// ---------- movable objects: each sits in a pivot group at its footprint centre ----------
+const LS_KEY='garage-layout-v1';
+let LAYOUT={}; try{ LAYOUT=JSON.parse(localStorage.getItem(LS_KEY)||'{}')||{}; }catch(e){ LAYOUT={}; }
+let movers={}, HOME={};
+const OLD_HOME={cabin:{x:1.62,z:2.55}};   // homes saved before entries carried their own (cabin was 4.6 m then)
+function movable(key,name,inner,cx,cz,parent){
+  const m=new THREE.Group(); m.userData.movable=key; m.userData.name=name; HOME[key]={x:cx,z:cz,r:0};
+  const s=LAYOUT[key]; m.position.set(cx,0,cz);
+  if(s){ const h={x:s.hx??OLD_HOME[key]?.x??cx, z:s.hz??OLD_HOME[key]?.z??cz};   // keep the user's offset from home when the home moves
+    m.position.set(cx+s.x-h.x,0,cz+s.z-h.z); m.rotation.y=s.r||0; }
+  inner.position.x-=cx; inner.position.z-=cz; m.add(inner); parent.add(m); movers[key]=m; return m;
+}
+
+// ---------- dimension lines: each set lives inside what it measures, so it moves with it ----------
+let dimSets=[];
+function dimSet(parent){ const s=new THREE.Group(); s.visible=P.dims; parent.add(s); dimSets.push(s); return s; }
+function dim(set,a,b,text,tick,near=false){
+  const up=V(0,1,0).cross(tick).lengthSq()>1e-6?V(0,1,0):V(1,0,0);
+  for(const [p,q,u] of [[a,b,tick],[a.clone().addScaledVector(tick,-.14),a.clone().addScaledVector(tick,.14),up],[b.clone().addScaledVector(tick,-.14),b.clone().addScaledVector(tick,.14),up]])
+    bar(M.dim,p,q,.02,.02,u,set,false).userData.dim=true;
+  const an=new THREE.Object3D(); an.position.copy(a).add(b).multiplyScalar(.5); set.add(an);
+  const el=document.createElement('div'); el.className='dim'; el.textContent=text; labelsEl.appendChild(el);
+  dims.push({el,anchor:an,near});
+}
+function buildDims(){
+  const s=dimSet(G), {W,H,bay}=P, Lh=L(), d0=P.doorX, d1=d0+P.doorW, dh=P.doorH;
+  dim(s,V(.55,.03,bay),V(.55,.03,2*bay),fmt(bay)+' · шаг рам',V(1,0,0));
+  dim(s,V(.6,0,bay+.45),V(.6,H,bay+.45),fmt(H)+' · до карниза',V(0,0,1));
+  dim(s,V(0,.03,.45),V(W,.03,.45),fmt(W)+' · ширина',V(0,0,1));
+  dim(s,V(W-.6,.03,0),V(W-.6,.03,Lh),fmt(Lh)+' · длина',V(1,0,0));
+  dim(s,V(0,dh+.6,.3),V(d0,dh+.6,.3),fmt(d0),V(0,1,0));
+  dim(s,V(d0,dh+.6,.3),V(d1,dh+.6,.3),fmt(P.doorW)+' · ворота',V(0,1,0));
+  dim(s,V(d1+.2,0,.3),V(d1+.2,dh,.3),fmt(dh),V(1,0,0));
+  dim(s,V(W/2,0,Lh-.4),V(W/2,ridgeH(),Lh-.4),fmt(ridgeH())+' · конёк',V(1,0,0));
+}
+
+// ---------- build / rebuild ----------
+function build(){
+  if(G){ scene.remove(G); buildGeos.forEach(g=>g.dispose()); buildMats.forEach(m=>{ m.map&&m.map.dispose(); m.dispose(); }); }
+  select(null); buildGeos=[]; buildMats=[]; dims.forEach(d=>d.el.remove()); dims=[]; dimSets=[]; movers={}; HOME={}; doorParts=null;
+  G=new THREE.Group(); scene.add(G);
+  buildFloor(); buildWalls(); buildFrames(); buildRoof(); buildFittings(); buildDoor(); buildCabin(); buildOffice(); buildTireZone(); buildStore(); buildDims();
+  sun.position.set(P.W/2+16,34,L()/2-20); sun.target.position.set(P.W/2,0,L()/2);
+  $('door').max=P.doorH; P.doorOpen=Math.min(P.doorOpen,P.doorH); syncUI();
+}
+
+// ---------- views ----------
+let mode='corner', tween=null, view={x:0,y:0,w:1,h:1};
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const PRESETS = {
+  corner: ()=>[[Math.min(P.W-1.2,10.8),3.4,13.5],[1.6,2.0,1.8]],
+  plan: ()=>[[P.W/2,L()*1.1+8,L()/2+0.01],[P.W/2,0,L()/2]],
+  outside: ()=>[[P.W+9,7,-15],[P.W/2-1,3,3]],
+  tires: ()=>[[8.5,2.6,13.0],[2.4,0.9,7.8]],
+  mo320: ()=>{ const p=movers.mo320.position; return [[p.x+2.7,1.75,p.z+1.8],[p.x-.1,1.1,p.z-.1]]; },
+  wb220: ()=>{ const p=movers.wb220.position; return [[p.x+2.2,1.55,p.z+1.7],[p.x,.85,p.z-.2]]; },
+  store: ()=>[[Math.min(P.W-1,P.stW+7.5),5.2,(P.bays-2)*P.bay-6],[P.stW*.45,2.0,L()-P.bay]],
+  st2: ()=>{ const zm=((P.bays-2)*P.bay+L())/2, xm=P.stW/2, f=P.stG+.12; return [[xm+2.6,f+10.5,zm+.01],[xm,f,zm]]; },
+  st1: ()=>{ const zm=((P.bays-2)*P.bay+L())/2, xm=P.stW/2; return [[xm+2.6,10.5,zm+.01],[xm,0,zm]]; },
+  cabtop: ()=>{ const m=movers.cabin, o=V(1.8,8.6,.01).applyAxisAngle(V(0,1,0),m.rotation.y); return [[m.position.x+o.x,o.y,m.position.z+o.z],[m.position.x,0,m.position.z]]; },
+  office: ()=>{ const {a,b,d}=offBox(); return [[a-5.5,3.6,d+5.0],[(a+b)/2-1,1.2,d*.45]]; },   // both glazed walls at about 45°, over the tyre trolley
+  offtop: ()=>{ const {a,b,d}=offBox(); return [[(a+b)/2+2.2,15,d/2+.01],[(a+b)/2,0,d/2]]; },
+};
+function layout(){
+  const sw=stage.clientWidth, shh=stage.clientHeight; let x=0,y=0,w=sw,h=shh;
+  const ph=PHOTOS[mode];
+  if(ph){
+    let ax=0, ay=0, aw=sw, ah=shh; const pr=panel.getBoundingClientRect();
+    if(sw>=900){ ax=pr.right+16; aw=sw-ax-16; ay=16; ah=shh-32; } else { ah=Math.max(180,pr.top-12); }
+    const s=Math.min(aw/ph.w,ah/ph.h); w=Math.round(ph.w*s); h=Math.round(ph.h*s); x=Math.round(ax+(aw-w)/2); y=Math.round(ay+(ah-h)/2);
+  }
+  renderer.setSize(w,h,false);
+  Object.assign(canvas.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});
+  Object.assign(photo.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});
+  view={x,y,w,h};
+  if(!ph){   // shift the lens so the scene centres in the area the panel leaves free
+    const pr=panel.getBoundingClientRect(); camera.clearViewOffset(); camera.fov=55;
+    if(sw>=900){ const cx=Math.min(w*0.68,(pr.right+w)/2); camera.aspect=2*cx/h; camera.setViewOffset(2*cx,h,0,0,w,h); }
+    else { const cy=Math.max(h*0.28,pr.top/2), Hf=2*(h-cy), a=w/(2*cy);   // narrow screens: keep ~64° across the free area
+      const fv=a<1.2?Math.min(85,2*Math.atan(Math.tan(32*Math.PI/180)/a)*180/Math.PI):55;
+      camera.fov=2*Math.atan(Math.tan(fv*Math.PI/360)*Hf/(2*cy))*180/Math.PI; camera.aspect=w/Hf; camera.setViewOffset(w,Hf,0,h-2*cy,w,h); }
+    camera.updateProjectionMatrix();
+  }
+}
+function setPressed(){ document.querySelectorAll('#views button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===mode))); }
+function goView(key){
+  const ph=PHOTOS[key]; mode=key; tween=null; setPressed();
+  $('hint').textContent = ph ? ph.hint : HINTS[key];
+  $('ovrow').hidden = $('ov').hidden = photo.hidden = !ph;
+  if(ph){
+    P.cabin=ph.cabin; P.tires=ph.tires; P.cabRoof=true; P.store=false; P.storeCut=0; P.office=false; P.offRoof=true;
+    if(ph.door!==null){ P.doorOpen = ph.door==='open'?P.doorH:ph.door; placeDoor(); }
+    if(!P.roof) setRoof(true);
+    syncUI();
+    photo.src=ph.src;
+    const fx=Math.cos(ph.yaw), fz=Math.sin(ph.yaw), tgt=V(ph.pos[0]+fx*6,ph.pos[1],ph.pos[2]+fz*6);
+    camera.position.set(...ph.pos); controls.target.copy(tgt); camera.lookAt(tgt);
+    const Wf=2*Math.max(ph.cx,ph.w-ph.cx), Hf=2*Math.max(ph.cy,ph.h-ph.cy);
+    camera.fov=2*Math.atan(Hf/2/ph.f)*180/Math.PI; camera.aspect=Wf/Hf;
+    camera.setViewOffset(Wf,Hf,Wf/2-ph.cx,Hf/2-ph.cy,ph.w,ph.h);
+    layout(); controls.update();
+  } else {
+    camera.clearViewOffset(); camera.fov=55; layout();
+    if(key==='plan' && P.roof){ setRoof(false); syncUI(); }
+    if(key==='cabtop'){ P.cabin=true; P.cabRoof=false; setRoof(false); syncUI(); }
+    if(key==='store'){ P.store=true; P.storeCut=0; syncUI(); }
+    if(key==='st2'||key==='st1'){ P.store=true; P.storeCut=key==='st2'?1:2; setRoof(false); syncUI(); }
+    if(key==='office'||key==='offtop'){ P.office=true; P.offRoof=key==='office'; if(key==='offtop') setRoof(false); syncUI(); }
+    if(['tires','mo320','wb220'].includes(key) && !P.tires){ P.tires=true; syncUI(); }
+    const [p,t]=PRESETS[key](); flyTo(p,t);
+  }
+}
+function leavePhoto(){ if(!PHOTOS[mode]) return; mode='free'; setPressed(); photo.hidden=$('ovrow').hidden=$('ov').hidden=true; camera.clearViewOffset(); camera.fov=55; layout(); $('hint').textContent='Свободный обзор. Выберите ракурс, чтобы вернуться к фото.'; }
+function flyTo(p,t){ const d=reduce?1:900; tween={p0:camera.position.clone(),t0:controls.target.clone(),p1:V(...p),t1:V(...t),s:performance.now(),d}; }
+controls.addEventListener('start',()=>{ tween=null; leavePhoto(); });
+
+// ---------- UI ----------
+function syncUI(){
+  $('t-cabin').checked=P.cabin; $('t-tires').checked=P.tires; $('t-dims').checked=P.dims; $('t-roof').checked=P.roof;
+  $('t-cabroof').checked=P.cabRoof; if(cabRoofGroup) cabRoofGroup.visible=P.cabRoof; placeCabDoors(); setRoof(P.roof);
+  $('t-store').checked=P.store; if(storeGroup){ storeGroup.visible=P.store; stCeil.visible=P.storeCut<1; stUpper.visible=P.storeCut<2; stFrameDims.visible=P.storeCut===2; }
+  $('t-office').checked=P.office; $('t-offroof').checked=P.offRoof; if(officeGroup){ officeGroup.visible=P.office; offRoofGroup.visible=P.offRoof; offFrameDims.visible=!P.offRoof; }
+  if(tireGroup) tireGroup.visible=P.tires;
+  $('door').value=P.doorOpen; $('doorv').textContent=fmt(P.doorOpen);
+  const spec=[[fmt(L()).replace(',00',''),'длина'],[fmt(P.W),'ширина'],[`${P.bays}×${String(P.bay).replace('.',',')} м`,'пролёты'],
+    [fmt(P.H),'карниз'],[fmt(ridgeH()),'конёк'],[`${String(P.doorW).replace('.',',')}×${String(P.doorH).replace('.',',')}`,'ворота, м']];
+  $('spec').innerHTML=spec.map(([v,k])=>`<div><b>${v}</b><span>${k}</span></div>`).join('');
+  dimSets.forEach(s=>s.visible=P.dims);
+  if(cabinGroup) cabinGroup.visible=P.cabin;
+  if(behindCabin) behindCabin.visible=!P.cabin;
+}
+function buildForm(){
+  const f=$('form'); f.innerHTML='';
+  for(const [k,label,min,max,step] of FIELDS){
+    if(!label){ const d=document.createElement('div'); d.className='grp'; d.textContent=k; f.appendChild(d); continue; }
+    const id='f-'+k, l=document.createElement('label'); l.htmlFor=id; l.textContent=label;
+    const i=document.createElement('input'); i.type='number'; i.id=id; i.min=min; i.max=max; i.step=step||0.05; i.value=P[k]; i.inputMode='decimal';
+    i.addEventListener('change',()=>{ let v=parseFloat(String(i.value).replace(',','.')); if(!isFinite(v)) v=P[k];
+      v=Math.min(max,Math.max(min,v)); if(step===1) v=Math.round(v); P[k]=v;
+      P.doorW=Math.min(P.doorW,P.W-1.2); P.doorX=Math.min(P.doorX,P.W-P.doorW-0.6); P.doorH=Math.min(P.doorH,P.H-0.4); P.band=Math.min(P.band,P.H-1);
+      P.cabW=Math.min(P.cabW,L()-1); P.cabD=Math.max(1.2,Math.min(P.cabD,P.doorX-0.5));
+      FIELDS.forEach(([fk,fl])=>{ if(fl) $('f-'+fk).value=+P[fk].toFixed(2); }); build(); });
+    f.append(l,i);
+  }
+}
+$('views').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) goView(b.dataset.view); });
+$('t-cabin').addEventListener('change',e=>{ P.cabin=e.target.checked; cabinGroup.visible=P.cabin; behindCabin.visible=!P.cabin; if(!P.cabin&&sel===movers.cabin) select(null); });
+$('t-tires').addEventListener('change',e=>{ P.tires=e.target.checked; tireGroup.visible=P.tires; if(!P.tires&&sel&&sel.parent===tireGroup) select(null); });
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>goView(b.dataset.go)));
+$('t-dims').addEventListener('change',e=>{ P.dims=e.target.checked; dimSets.forEach(s=>s.visible=P.dims); });
+$('t-roof').addEventListener('change',e=>setRoof(e.target.checked));
+$('t-cabroof').addEventListener('change',e=>{ P.cabRoof=e.target.checked; cabRoofGroup.visible=P.cabRoof; placeCabDoors(); });
+$('cabTop').addEventListener('click',()=>goView('cabtop'));
+$('t-store').addEventListener('change',e=>{ P.store=e.target.checked; storeGroup.visible=P.store; });
+$('storeView').addEventListener('click',()=>goView('store'));
+$('st2View').addEventListener('click',()=>goView('st2'));
+$('st1View').addEventListener('click',()=>goView('st1'));
+$('t-office').addEventListener('change',e=>{ P.office=e.target.checked; officeGroup.visible=P.office; });
+$('t-offroof').addEventListener('change',e=>{ P.offRoof=e.target.checked; offRoofGroup.visible=P.offRoof; offFrameDims.visible=!P.offRoof; });
+$('officeView').addEventListener('click',()=>goView('office'));
+$('offTop').addEventListener('click',()=>goView('offtop'));
+$('door').addEventListener('input',e=>{ P.doorOpen=parseFloat(e.target.value); $('doorv').textContent=fmt(P.doorOpen); placeDoor(); });
+$('ov').addEventListener('input',e=>{ photo.style.opacity=e.target.value/100; $('ovv').textContent=e.target.value+'%'; });
+$('reset').addEventListener('click',()=>{ Object.assign(P,DEFAULTS); buildForm(); build(); });
+$('collapse').addEventListener('click',()=>{ const m=panel.classList.toggle('min'); $('collapse').textContent=m?'Развернуть':'Свернуть'; $('collapse').setAttribute('aria-expanded',String(!m)); requestAnimationFrame(layout); });
+new ResizeObserver(()=>layout()).observe(stage);
+
+// ---------- drag objects across the floor, rotate the selected one ----------
+const ray=new THREE.Raycaster(), ndc=new THREE.Vector2(), floorPlane=new THREE.Plane(V(0,1,0),0), _p=new THREE.Vector3();
+M.selFill=new THREE.MeshBasicMaterial({color:0xe2ad2a,transparent:true,opacity:.18,depthWrite:false});
+let sel=null, drag=null, downAt=null, selMark=null, lastHover=0;
+function setRay(e){ const r=canvas.getBoundingClientRect(); ndc.set((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height)*2+1); ray.setFromCamera(ndc,camera); }
+function pick(e){
+  setRay(e);
+  for(const h of ray.intersectObjects(Object.values(movers),true)){
+    if(h.object.userData.dim || !shown(h.object)) continue;
+    let o=h.object; while(o && !o.userData.movable) o=o.parent; if(o) return o;
+  }
+  return null;
+}
+function footprint(m){   // world-space box of the object itself, without its dimension lines
+  const b=new THREE.Box3(), bb=new THREE.Box3(); m.updateMatrixWorld(true);
+  m.traverse(o=>{ if(!o.isMesh||o.userData.dim) return; if(!o.geometry.boundingBox) o.geometry.computeBoundingBox(); b.union(bb.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld)); });
+  return b;
+}
+function keepInside(m){
+  const b=footprint(m), W=P.W, Lh=L(), g=.02;
+  m.position.x += b.min.x<g ? g-b.min.x : b.max.x>W-g ? W-g-b.max.x : 0;
+  m.position.z += b.min.z<g ? g-b.min.z : b.max.z>Lh-g ? Lh-g-b.max.z : 0;
+}
+function selInfo(){
+  if(!sel) return; const b=footprint(sel), deg=Math.round(((-sel.rotation.y*180/Math.PI)%360+360)%360);
+  $('selInfo').textContent=`${fmt(Math.max(0,b.min.x))} от чёрной стены · ${fmt(Math.max(0,b.min.z))} от торца с воротами · поворот ${deg}°`;
+}
+function select(m){
+  if(selMark){ selMark.removeFromParent(); selMark=null; }
+  sel=m; $('sel').hidden=!m; document.body.classList.toggle('has-sel',!!m); if(!m) return;
+  const r=m.rotation.y, p=m.position.clone(); m.rotation.y=0; m.position.set(0,0,0);
+  const b=footprint(m); m.rotation.y=r; m.position.copy(p);
+  const w=b.max.x-b.min.x, d=b.max.z-b.min.z, cx=(b.max.x+b.min.x)/2, cz=(b.max.z+b.min.z)/2;
+  selMark=new THREE.Group();
+  for(const [sx,sz,x,z] of [[w+.03,.03,cx,b.min.z],[w+.03,.03,cx,b.max.z],[.03,d,b.min.x,cz],[.03,d,b.max.x,cz]]) box(M.dim,sx,.006,sz,x,.008,z,selMark,false).userData.dim=true;
+  box(M.selFill,w,.002,d,cx,.004,cz,selMark,false).userData.dim=true;
+  m.add(selMark); $('selName').textContent=m.userData.name; selInfo();
+}
+function saveLayout(){
+  for(const [k,m] of Object.entries(movers)) LAYOUT[k]={x:+m.position.x.toFixed(3),z:+m.position.z.toFixed(3),r:+m.rotation.y.toFixed(4),hx:HOME[k].x,hz:HOME[k].z};
+  try{ localStorage.setItem(LS_KEY,JSON.stringify(LAYOUT)); }catch(e){}
+}
+function rotateSel(deg){ if(!sel) return; sel.rotation.y+=deg*Math.PI/180; keepInside(sel); selInfo(); saveLayout(); }
+function homeSel(){ if(!sel) return; const h=HOME[sel.userData.movable]; sel.position.set(h.x,0,h.z); sel.rotation.y=0; selInfo(); saveLayout(); }
+canvas.addEventListener('pointerdown',e=>{
+  const ae=document.activeElement; if(ae && ae!==canvas && ae.tagName==='INPUT') ae.blur();
+  if(e.pointerType==='mouse' && e.button!==0) return;
+  downAt={x:e.clientX,y:e.clientY};
+  const m=pick(e); if(!m) return;
+  e.stopImmediatePropagation(); e.preventDefault(); controls.enabled=false; tween=null; leavePhoto();
+  setRay(e); if(!ray.ray.intersectPlane(floorPlane,_p)){ controls.enabled=true; return; }
+  select(m); drag={m,id:e.pointerId,ox:m.position.x-_p.x,oz:m.position.z-_p.z};
+  canvas.setPointerCapture(e.pointerId); canvas.style.cursor='grabbing';
+},{capture:true});
+canvas.addEventListener('pointermove',e=>{
+  if(drag && e.pointerId===drag.id){
+    setRay(e); if(!ray.ray.intersectPlane(floorPlane,_p)) return;
+    const s=e.altKey?0:.05; let x=_p.x+drag.ox, z=_p.z+drag.oz; if(s){ x=Math.round(x/s)*s; z=Math.round(z/s)*s; }
+    drag.m.position.x=x; drag.m.position.z=z; keepInside(drag.m); selInfo(); return;
+  }
+  if(e.pointerType==='mouse' && !e.buttons && performance.now()-lastHover>60){ lastHover=performance.now(); canvas.style.cursor=pick(e)?'grab':''; }
+});
+function endPointer(e){
+  if(drag && e.pointerId===drag.id){ drag=null; controls.enabled=true; canvas.style.cursor='grab'; saveLayout(); downAt=null; return; }
+  if(downAt && e.type==='pointerup' && Math.hypot(e.clientX-downAt.x,e.clientY-downAt.y)<4 && !pick(e)) select(null);
+  downAt=null;
+}
+canvas.addEventListener('pointerup',endPointer); canvas.addEventListener('pointercancel',endPointer);
+document.querySelectorAll('[data-rot]').forEach(b=>b.addEventListener('click',()=>rotateSel(+b.dataset.rot)));
+$('selHome').addEventListener('click',homeSel);
+$('selClose').addEventListener('click',()=>select(null));
+$('resetLayout').addEventListener('click',()=>{ for(const [k,m] of Object.entries(movers)){ const h=HOME[k]; m.position.set(h.x,0,h.z); m.rotation.y=0; }
+  LAYOUT={}; try{ localStorage.removeItem(LS_KEY); }catch(e){} selInfo(); });
+
+// ---------- fly the camera: arrows / WASD / E Q, plus the on-screen pad ----------
+const KEYS={ArrowUp:'fwd',KeyW:'fwd',ArrowDown:'back',KeyS:'back',ArrowLeft:'tl',ArrowRight:'tr',KeyA:'sl',KeyD:'sr',
+  KeyE:'up',PageUp:'up',KeyQ:'down',PageDown:'down',ShiftLeft:'fast',ShiftRight:'fast'};
+const HELD=new Set(), held=HELD, YAX=V(0,1,0), _f=new THREE.Vector3(), _r=new THREE.Vector3(), _m=new THREE.Vector3();
+function press(k){ held.add(k); if(k!=='fast'){ tween=null; leavePhoto(); } }
+addEventListener('keydown',e=>{
+  const t=e.target; if(t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable)) return;
+  if(sel){ const r={BracketLeft:15,BracketRight:-15,KeyR:-90}[e.code];
+    if(r){ e.preventDefault(); rotateSel(r); return; } if(e.code==='Escape'){ select(null); return; } }
+  const k=KEYS[e.code]; if(!k || e.metaKey || e.ctrlKey) return; e.preventDefault(); press(k);
+  if(!e.repeat && k!=='fast') fly(.1,new Set(held.has('fast')?[k,'fast']:[k]));   // a short tap still moves a step
+});
+addEventListener('keyup',e=>{ const k=KEYS[e.code]; if(k) held.delete(k); });
+addEventListener('blur',()=>held.clear());
+document.querySelectorAll('#pad button').forEach(b=>{
+  const k=b.dataset.k, off=()=>held.delete(k);
+  b.addEventListener('pointerdown',e=>{ e.preventDefault(); b.setPointerCapture(e.pointerId); press(k); });
+  b.addEventListener('pointerup',off); b.addEventListener('pointercancel',off); b.addEventListener('lostpointercapture',off);
+});
+function fly(dt,held=HELD){
+  if(!held.size || (held.size===1 && held.has('fast'))) return;
+  camera.getWorldDirection(_f); _f.y=0;
+  if(_f.lengthSq()<1e-4){ _f.set(0,1,0).applyQuaternion(camera.quaternion); _f.y=0; }   // looking straight down: "forward" = screen up
+  _f.normalize(); _r.set(-_f.z,0,_f.x);
+  const fast=held.has('fast'), sp=(fast?7:2.8)*dt; _m.set(0,0,0);
+  if(held.has('fwd')) _m.add(_f); if(held.has('back')) _m.sub(_f);
+  if(held.has('sr')) _m.add(_r); if(held.has('sl')) _m.sub(_r);
+  if(held.has('up')) _m.y+=1; if(held.has('down')) _m.y-=1;
+  _m.multiplyScalar(sp); if(camera.position.y+_m.y<.3) _m.y=.3-camera.position.y;
+  camera.position.add(_m); controls.target.add(_m);
+  const turn=(held.has('tl')?1:0)-(held.has('tr')?1:0);
+  if(turn){ _m.subVectors(controls.target,camera.position).applyAxisAngle(YAX,turn*(fast?2:1.25)*dt); controls.target.copy(camera.position).add(_m); }
+}
+
+// ---------- loop ----------
+const _v=new THREE.Vector3(), _w=new THREE.Vector3();
+function shown(o){ for(;o;o=o.parent) if(!o.visible) return false; return true; }
+function labels(){
+  const c=camera.position;   // labels sit inside the hall; hide them when looking at it from outside
+  const inside=(c.x>-0.3&&c.x<P.W+0.3&&c.z>-0.6&&c.z<L()+0.3&&c.y<yD(c.x)) || !P.roof;
+  for(const d of dims){
+    d.anchor.getWorldPosition(_w);
+    const on=d.vis ? (d.vis() && inside && shown(d.anchor)) : d.room ? (!P.cabRoof && inside && shown(d.anchor))
+      : (P.dims && inside && shown(d.anchor) && (!d.near || c.distanceTo(_w)<9));
+    if(!on){ d.el.hidden=true; continue; }
+    _v.copy(_w).applyMatrix4(camera.matrixWorldInverse); const behind=_v.z>-0.2;
+    _v.copy(_w).project(camera);
+    const vis=!behind && Math.abs(_v.x)<1.02 && Math.abs(_v.y)<1.02;
+    d.el.hidden=!vis; if(vis) d.el.style.transform=`translate(${view.x+(_v.x+1)/2*view.w}px,${view.y+(1-_v.y)/2*view.h}px) translate(-50%,-50%)`;
+  }
+}
+let lastT=performance.now();
+function tick(now){
+  fly(Math.min(.05,Math.max(0,(now-lastT)/1000))); lastT=now;
+  if(tween){ const k=Math.min(1,(now-tween.s)/tween.d), e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+    camera.position.lerpVectors(tween.p0,tween.p1,e); controls.target.lerpVectors(tween.t0,tween.t1,e); if(k>=1) tween=null; }
+  controls.update(); renderer.render(scene,camera); labels(); requestAnimationFrame(tick);
+}
+buildForm(); build();
+const [p0,t0]=PRESETS.corner(); camera.position.set(...p0); controls.target.set(...t0);
+goView(location.hash==='#photo1'?'p1':location.hash==='#photo2'?'p2':location.hash==='#photo3'?'p3':'corner');
+if(!PHOTOS[mode]){ tween=null; camera.position.set(...p0); controls.target.set(...t0); }
+$('loading').remove();
+requestAnimationFrame(tick);
+</script>
+
+</body></html>
