@@ -277,7 +277,7 @@ const HINTS = {
   st2:'Второй этаж склада без потолка, одна открытая комната: кухня с микроволновкой, кофемашиной и кулером, стол на 6 человек, диван, раздевалка со шкафчиками.',
   st1:'Первый этаж склада без второго этажа: стеллажи с запчастями, бочки для ветоши, аэрозолей и мусора, два еврокуба по 1000 л под масло и грязь. По центру столб 200 × 200, на нём брус 100 × 200 поперёк склада, от него к поперечной стене и к дальнему торцу балки 50 × 120 через 400 мм.',
   cabtop:'Санблок без крыши, сверху: три прямые комнаты от входа до задней стены. Слева туалет, по центру умывальная со входом, справа электрощитовая.',
-  office:'Офис справа от ворот, 7,5 × 10 м. Стена от ворот: 0,75 белой + дверной блок 1,15 + 7,35 м стекла + 0,75 белой; фасад: 0,75 + 6 м стекла + 0,75; стена вдоль продольной — глухая. Рама алюминиевая 35 мм, секции стекла одинаковые. По высоте: профиль 35 + стекло 2500 + профиль 35 = 2,57 м до потолка, верх офиса 2,87 м.',
+  office:'Офис справа от ворот, 7,5 × 10 м. Стена от ворот: 0,75 белой + дверной блок 1,15 + 7,35 м стекла + 0,75 белой; фасад: 0,75 + 6 м стекла + 0,75; стена вдоль продольной — глухая. Рама алюминиевая 35 мм, секции стекла одинаковые. По высоте: профиль 35 + стекло 2500 + профиль 35 = 2,57 м до потолка, верх офиса 2,87 м. Дверь стеклянная, на всю высоту рамы, без фрамуги.',
   offtop:'Офис без крыши и потолка, сверху: на столбе 200 × 200 лежит брус 100 × 200 от стены до стены, от него к торцу с воротами и к фасаду идут балки 50 × 120 с шагом 400 мм. Стена офиса начинается в 0,14 м от стойки торца, стойка — в 0,62 м от ворот.',
   wb220:'NORTEC WB220L: вал и кожух справа, кожух поднят, педаль у основания. Колесо садится на вал лицом к оператору.',
 };
@@ -686,7 +686,7 @@ let officeGroup, offRoofGroup, offFrameDims;
 const offBox=()=>{ const a=P.doorX+P.doorW+.38, b=Math.min(a+P.offW,P.W-.44), d=Math.min(P.offD,L()-2); return {a,b,d}; };   // wall 0.14 m short of the post 0.62 m right of the gate
 function buildOffice(){
   const g=officeGroup=new THREE.Group(); G.add(g);
-  const t=.1, side=.75, fw=.035, dw=1.15, dh=2.1, {a:x0,b:x1,d:z1}=offBox(), gh=2*fw+P.offG, H=Math.max(P.offH,gh+.05);   // 35 + glass 2500 + 35 up to the ceiling, white band and roof above
+  const t=.1, side=.75, fw=.035, dw=1.15, {a:x0,b:x1,d:z1}=offBox(), gh=2*fw+P.offG, dh=gh-fw, H=Math.max(P.offH,gh+.05);   // 35 + glass 2500 + 35 up to the ceiling, white band and roof above; door leaf full height up to the head
   const put=(axis,c,mat,a,b,h,y,th=t,cast=true)=>axis==='z'                                       // piece of a wall along z (at x=c) or along x (at z=c)
     ? box(mat,th,h,b-a,c+t/2,y,(a+b)/2,g,cast) : box(mat,b-a,h,th,(a+b)/2,y,c+t/2,g,cast);
   const pane=(axis,c,a,b,y0,y1)=>put(axis,c,M.glass,a,b,y1-y0,(y0+y1)/2,.012,false);
@@ -695,9 +695,8 @@ function buildOffice(){
       if(!kind){ put(axis,c,M.cab,a,b,H,H/2); return {a,b}; }
       put(axis,c,M.cab,a,b,H-gh,(gh+H)/2);                                                          // white band between the glazing and the roof
       put(axis,c,M.frame,a,b,fw,gh-fw/2,t*.6);                                                      // head
-      if(kind==='door'){                                                                            // door block: jambs, leaf, glass transom over the leaf
+      if(kind==='door'){                                                                            // door block: jambs and a full-height leaf, no transom (owner)
         for(const u of [a,b-fw]) put(axis,c,M.frame,u,u+fw,gh-fw,(gh-fw)/2,t*.6);
-        put(axis,c,M.frame,a+fw,b-fw,fw,dh+fw/2,t*.6); pane(axis,c,a+fw,b-fw,dh+fw,gh-fw);
         const l0=a+fw, l1=b-fw, st=.04;
         for(const u of [l0,l1-st]) put(axis,c,M.frame,u,u+st,dh-.01,(dh-.01)/2,.045);
         put(axis,c,M.frame,l0,l1,.1,.06,.045); put(axis,c,M.frame,l0,l1,st,dh-.01-st/2,.045);
@@ -745,9 +744,9 @@ function buildOffice(){
   glassDims(w1[2],(u,y)=>V(x0-.04,y,u),V(1,0,0),V(0,0,1));
   glassDims(w2[1],(u,y)=>V(u,y,z1+.04),V(0,0,1),V(1,0,0));
   const dr=w1[1];
-  dim(ds,V(x0-.04,1.35,dr.l0),V(x0-.04,1.35,dr.l1),fmt(dr.l1-dr.l0)+' · полотно',V(1,0,0));
-  dim(ds,V(x0-.04,0,dr.l0+.25),V(x0-.04,dh,dr.l0+.25),fmt(dh)+' · дверь',V(0,0,1));
-  storeLabel(ds,'Дверной блок',`${mm(dw)} мм, полотно ${mm(dr.l1-dr.l0)} × ${mm(dh)}, сверху стекло`,x0-.15,H+.8,side+dw/2,()=>true);
+  dim(ds,V(x0-.04,1.8,dr.l0),V(x0-.04,1.8,dr.l1),fmt(dr.l1-dr.l0)+' · полотно',V(1,0,0));
+  dim(ds,V(x0-.04,0,dr.l0+.25),V(x0-.04,dh,dr.l0+.25),dh.toFixed(3).replace('.',',')+' м · дверь',V(0,0,1));
+  storeLabel(ds,'Дверной блок',`${mm(dw)} × ${mm(gh)} мм, полотно ${mm(dr.l1-dr.l0)} × ${mm(dh)} на всю высоту, без фрамуги`,x0-.15,H+.8,side+dw/2,()=>true);
   for(const [sg,x,z] of [[w1[2],x0-.15,(w1[2].a+w1[2].b)/2],[w2[1],(w2[1].a+w2[1].b)/2,z1+.15]])
     storeLabel(ds,'Стекло',`${sg.n} секций по ${mm(sg.pw)} × ${mm(gh-2*fw)} мм, рама ${mm(fw)} мм`,x,H+.3,z,()=>true);
   dim(ds,V(P.doorX+P.doorW,H+.35,.3),V(post,H+.35,.3),fmt(.62)+' · до стойки',V(0,1,0));
